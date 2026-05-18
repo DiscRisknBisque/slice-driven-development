@@ -1,0 +1,7 @@
+interface:
+  display_name: "Slice-Driven Development"
+  short_description: "Plan work through verifiable slices."
+  default_prompt: "Use $slice-driven-development to plan this project as verifiable vertical slices with architecture docs, decision records, and post-slice iteration."
+
+policy:
+  allow_implicit_invocation: true

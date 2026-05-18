@@ -1,0 +1,116 @@
+---
+name: slice-driven-development
+description: Use when the user wants to plan, implement, or steer a project through verifiable vertical slices; create or update roadmap, architecture, slice, and decision docs; process post-slice questions; draft the next slice; or preserve architecture memory across separate implementation sessions.
+---
+
+# Slice-Driven Development
+
+Use this skill when work should proceed through small, reviewable vertical slices rather than broad infrastructure phases.
+
+The loop is:
+
+```txt
+plan -> slice brief -> implementation session -> post-slice questions -> decisions -> next slice
+```
+
+## Core Rules
+
+- Prefer vertical slices that prove end-to-end behavior.
+- Keep only the current and next slice implementation-detailed.
+- Do not build ahead unless the current slice cannot work without a small prerequisite.
+- Treat post-implementation questions as design data.
+- Capture user answers as durable docs, not only chat history.
+- Push back when an answer creates brittleness, premature abstraction, or excessive scope.
+- Preserve open questions until implementation provides enough evidence.
+
+## Modes
+
+This skill supports two complementary session modes.
+
+### Coordinator Mode
+
+Use in a long-running planning or architecture session.
+
+Responsibilities:
+
+- maintain roadmap, architecture, slice, and decision docs
+- process implementation findings and post-slice questions
+- answer follow-up questions and push back where needed
+- record accepted decisions and guardrails
+- mark resolved questions in slice files
+- draft the next slice when enough signal exists
+
+Coordinator Mode does not usually implement code. It preserves continuity across implementation sessions.
+
+### Executor Mode
+
+Use in a short implementation session for one slice.
+
+Responsibilities:
+
+- read the roadmap, architecture, current slice, and relevant decisions
+- implement only the current slice
+- verify the result
+- avoid building ahead
+- update docs only when implementation changes the plan
+- end with changed files, run instructions, verification evidence, artifacts, and remaining open questions
+
+Executor Mode should produce information the Coordinator Mode session can process.
+
+## Planning Docs
+
+Create or maintain this structure unless the repo already has an equivalent:
+
+```txt
+docs/<project-or-feature>/
+  README.md
+  architecture.md
+  slices/
+    00-...
+    01-...
+  decisions/
+    0001-...
+```
+
+Use:
+
+- `README.md` for roadmap, current files, and working rules.
+- `architecture.md` for evolving system boundaries and durable contracts.
+- `slices/` for one file per vertical slice.
+- `decisions/` for accepted design decisions and guardrails.
+
+## Slice Workflow
+
+1. Read the roadmap, architecture doc, current slice file, and relevant decisions.
+2. If planning, draft or update the slice brief.
+3. If implementing, implement only that slice and verify it.
+4. After implementation, process open questions with the user.
+5. Update architecture and decision docs based on answers.
+6. Mark resolved questions in the slice file.
+7. Draft the next slice only when enough signal exists.
+
+Each slice should end with:
+
+- a working demo or reviewable artifact
+- verification evidence
+- open questions
+- a decision checkpoint before the next slice
+
+## Post-Slice Question Handling
+
+When the user answers open questions:
+
+- Answer any follow-up questions directly.
+- Push back on weak or risky answers.
+- Update affected docs.
+- Add a decision record when the answer changes architecture, workflow, contracts, or policy.
+- Draft the next slice if the answers create enough clarity.
+- Do not rewrite history unless the decision truly supersedes earlier docs.
+
+## References
+
+Load these only when needed:
+
+- `references/slice-template.md`: slice file template.
+- `references/decision-template.md`: decision record template.
+- `references/prompts.md`: prompts for implementation and post-slice sessions.
