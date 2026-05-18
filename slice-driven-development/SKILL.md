@@ -40,7 +40,16 @@ Responsibilities:
 - mark resolved questions in slice files
 - draft the next slice when enough signal exists
 
-Coordinator Mode does not usually implement code. It preserves continuity across implementation sessions.
+Authority boundaries:
+
+- Coordinator Mode must not edit product code, tests, build files, schemas, migrations, runtime configuration, or other implementation artifacts.
+- Coordinator Mode may suggest code changes, but the suggestions must remain scoped to the current slice.
+- Coordinator Mode may update planning, architecture, slice, and decision docs.
+- Coordinator Mode may delegate code changes to a separate implementation session or sub-agent only when the user explicitly asks for delegation or orchestration.
+- Delegated code changes must stay within the current slice. If a change is large enough to require reordering slices or adding a new slice, tell the user and update the relevant planning docs instead of expanding implementation scope.
+- If the user wants the same session to make code changes, switch explicitly into Executor Mode before editing implementation artifacts.
+
+Coordinator Mode preserves continuity across implementation sessions.
 
 ### Executor Mode
 
@@ -62,7 +71,7 @@ Executor Mode should produce information the Coordinator Mode session can proces
 Create or maintain this structure unless the repo already has an equivalent:
 
 ```txt
-docs/<project-or-feature>/
+docs/<milestone>/
   README.md
   architecture.md
   slices/
@@ -102,6 +111,9 @@ When the user answers open questions:
 
 - Answer any follow-up questions directly.
 - Push back on weak or risky answers.
+- Account for every open question before marking it resolved.
+- Classify each open question as `answered directly`, `answered indirectly`, `still open`, or `superseded`.
+- If a question is answered indirectly by another answer or implementation finding, state that explicitly to the user and document which answer or finding resolved it.
 - Update affected docs.
 - Add a decision record when the answer changes architecture, workflow, contracts, or policy.
 - Draft the next slice if the answers create enough clarity.
