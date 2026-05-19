@@ -22,10 +22,23 @@ plan -> slice brief -> implementation session -> post-slice questions -> decisio
 - Capture user answers as durable docs, not only chat history.
 - Push back when an answer creates brittleness, premature abstraction, or excessive scope.
 - Preserve open questions until implementation provides enough evidence.
+- Number milestones when the user has not already specified a milestone numbering scheme.
+- Keep milestone and slice structure in the docs and workflow. Product code should follow the best architecture for that product, not mirror milestone or slice boundaries.
 
 ## Modes
 
 This skill supports two complementary session modes.
+
+### Mode Selection
+
+At the start of every session using this skill, identify the active mode as either Coordinator Mode or Executor Mode.
+
+If the user has not specified a mode:
+
+- Use Coordinator Mode for planning, milestone design, post-slice questions, decisions, Git workflow management, and next-slice drafting.
+- Use Executor Mode only when the user explicitly asks to implement a slice or modify code.
+
+State the selected mode before taking action. Do not mix Coordinator and Executor responsibilities in the same response unless the user explicitly requests a mode switch.
 
 ### Coordinator Mode
 
@@ -45,6 +58,7 @@ Authority boundaries:
 - Coordinator Mode must not edit product code, tests, build files, schemas, migrations, runtime configuration, or other implementation artifacts.
 - Coordinator Mode may suggest code changes, but the suggestions must remain scoped to the current slice.
 - Coordinator Mode may update planning, architecture, slice, and decision docs.
+- Coordinator Mode may perform Git workflow operations for branch creation, status checks, staging planning artifacts, committing docs, and merging completed slice branches.
 - Coordinator Mode may delegate code changes to a separate implementation session or sub-agent only when the user explicitly asks for delegation or orchestration.
 - Delegated code changes must stay within the current slice. If a change is large enough to require reordering slices or adding a new slice, tell the user and update the relevant planning docs instead of expanding implementation scope.
 - If the user wants the same session to make code changes, switch explicitly into Executor Mode before editing implementation artifacts.
@@ -61,6 +75,7 @@ Responsibilities:
 - implement only the current slice
 - verify the result
 - avoid building ahead
+- organize code according to the product's best architecture, not the milestone or slice document structure
 - update docs only when implementation changes the plan
 - end with changed files, run instructions, verification evidence, artifacts, and remaining open questions
 
@@ -87,6 +102,54 @@ Use:
 - `architecture.md` for evolving system boundaries and durable contracts.
 - `slices/` for one file per vertical slice.
 - `decisions/` for accepted design decisions and guardrails.
+
+Conventions:
+
+- If the user has not specified milestone numbering, assign stable milestone numbers.
+- Slice and decision documents should already be numbered.
+- The docs structure is milestone and slice based, but the product code should use the architecture that best fits the product domain, framework, and runtime.
+- Do not create source directories, modules, packages, APIs, or runtime concepts merely to match milestone or slice names.
+
+## Git Workflow
+
+Use Git to keep milestone planning, slice implementation, and post-slice documentation changes reviewable and reversible.
+
+Branch topology:
+
+```txt
+main <- <milestone-branch> <- <slice-branch>
+```
+
+Safety rules:
+
+- Before any branch switch, commit, merge, or push, run `git status --short`.
+- Stop if unrelated dirty changes are present. Never discard user changes.
+- Stage only files that belong to the current workflow step.
+- Ask before merging if there are conflicts, unexpected files, or unclear ownership.
+- Git workflow operations do not authorize Coordinator Mode to edit implementation artifacts.
+
+Milestone setup:
+
+- Create the milestone branch from trunk: `<milestoneNumber>-<milestoneName>`.
+- Commit the initial planning docs with message: `Plan <milestoneNumber>-<milestoneName>`.
+
+Slice start:
+
+- Create the slice branch from the milestone branch: `<milestoneNumber>-<sliceNumber>-<sliceName>`.
+- Generate the implementation prompt from the current slice, roadmap, architecture, and relevant decisions.
+- Keep the slice branch scoped to the current slice.
+
+Slice finish:
+
+- Commit implementation changes with message: `Impl <milestoneNumber>-<sliceNumber>-<sliceName>`.
+- Process open questions in Coordinator Mode.
+- Commit post-slice doc updates with message: `Update docs based on <milestoneNumber>-<sliceNumber>-<sliceName> open question answers`.
+- Merge the slice branch back into the milestone branch after review.
+
+Milestone finish:
+
+- Review the implemented milestone against the roadmap, architecture, slices, and decisions.
+- Merge the milestone branch into trunk after the milestone review is accepted.
 
 ## Slice Workflow
 

@@ -2,9 +2,10 @@
 
 Slice Driven Development (SDD) is a workflow designed to strike a balance between agentic execution and human in the loop for agentic coding. It provides the following benefits:
 
-- Ensures that each major decision is catalogued
-- Each implementation can be verified by you, the developer
-- Any slice that goes bad can easily be discarded and replanned without losing a large amount of progress
+- **You Maintain Control**: Vertical slices ensure implementation can be verified by you, the developer. Each slice is guided by questions you answer at the end of each previous slice.
+- **Reduced Planning Fatigue**: Each slice is easier to consume than one long architecture document.
+- **Preserved Decision Traces**: Decision documents are generated through the process, so nothing is lost during development.
+- **Reduced Risk**: Any slice or milestone that goes bad can easily be discarded and replanned without losing a large amount of progress.
 
 Notably, you should already have an idea of what you're building. This isn't about composing the entire roadmap for your project, but about breaking down its implementation by milestones and slices. A milestone could be finishing the entire project in the case of a simple project or it could be a akin to a feature in a larger project.
 
@@ -40,15 +41,29 @@ If you only plan to have one milestone, you could use `main` as the milestone br
 
 ## Prompts
 
-### Answer Open Questions
+These are meant to be flexible starting points for you when using SDD. I recommend having a roadmap in in mind when building your product to make sure there's a guiding throughline for the milestones, but it's not essential, especially if your project is simple enough for one or two milestones.
 
-Here are my thoughts on `{featureOrProjectNameAndNumber}` Slice `{sliceNumber}`'s open questions. Answer any follow-up questions I added. Push back on my answers if you disagree.
+### Discuss & Plan a Milestone
 
-- `{question}`
-  - `{answer}`
+```markdown
+Let's think through the implementation of Diorama's next milestone, `02-runtime-answer-loop`. Once we've discussed we'll use `slice-driven-development` to create the necessary documents.
+
+Diorama is the explanation layer for the AI era — a platform that transforms source material (AI coding sessions, product documentation, or any knowledge corpus) into seamless, multimodal, conversational walkthroughs. A Diorama is not a slide deck, not a recording, and not a chatbot. It is a narrated, navigable presentation where an AI agent guides the viewer through structured content — pulling up code, diagrams, browser views, and images in natural flow — while fielding questions grounded in the source material. The viewer forgets they are watching an LLM.
+
+If you feel more depth is needed on any completed items, see the `docs` directory.
+
+**Completed Milestones**
+
+`{completedMilestones}`
+
+**Roadmap**
+
+`{roadmap}`
+```
 
 ### Implement a Slice
 
+```markdown
 We are building {brief-milestone-description} in verifiable vertical slices.
 
 Start by reading:
@@ -62,8 +77,19 @@ Then implement only Slice {currentSliceNumber}.
 
 End by reporting what changed, how to run it, how it was verified, screenshots/artifact paths, and any open questions remaining.
 
-### Milestone Review
+### Answer Open Questions
 
+Here are my thoughts on `{featureOrProjectNameAndNumber}` Slice `{sliceNumber}`'s open questions. Answer any follow-up questions I added. Push back on my answers if you disagree.
+
+- `{question}`
+  - `{answer}`
+```
+
+### Review a Milestone
+
+It's important you provide your own understanding of the milestone here. Don't rely on the LLM alone to verify its work. They've been proven to smooth things over, especially when checking their own work.
+
+```markdown
 The `{numberOfSlices}` slices have all been implemented successfully. Examine the code base and compare it to our initially generated `README`. Then, tell me if my below understanding is correct.
 
 Based on my usage and inspection of the code myself, we have a solid core with a number of pieces implemented “manually“ using the coding agent. We need to extract those into behaviors that execute during the presentation in case of modification. Specifically, the harness can:
@@ -71,7 +97,8 @@ Based on my usage and inspection of the code myself, we have a solid core with a
 - Create a presentation composed of multiple scenes using skills. The skills system can be expanded to cover new scene types.
 - Validate the presentation for correctness against our schema and using Chrome CDP.
 - Modify or create scenes in response to a viewer’s question.
+```
 
 ## Special Thanks
 
-Thank you to [Matt Now (@mattnowdev)](https://github.com/mattnowdev) for creating the [`thinking-partner`](https://github.com/mattnowdev/thinking-partner/tree/main?tab=readme-ov-file#alternative-install) skill, which I've found extremely helpful here and elsewhere.
+Thank you to [Matt Now (@mattnowdev)](https://github.com/mattnowdev) for creating the [thinking-partner](https://github.com/mattnowdev/thinking-partner/tree/main?tab=readme-ov-file) skill, which I've found extremely helpful here and elsewhere.
