@@ -13,10 +13,10 @@ SDD works best when you keep the architectural decisions and review checkpoints,
 
 SDD uses two agent roles:
 
-- **Coordinator Mode**: long-running planning session that maintains docs, decisions, Git workflow, and next-slice planning.
+- **Coordinator Mode**: long-running planning session that maintains docs, decisions, and next-slice planning.
 - **Executor Mode**: short implementation session that builds one slice, verifies it, and reports findings.
 
-The developer remains the reviewer and decision-maker. The agents handle repeatable workflow mechanics, but you approve plans, review code, answer open questions, and decide when to merge.
+The developer remains the reviewer and decision-maker. You also own the Git ceremony: branches, commits, and merges are explicit human checkpoints rather than hidden agent behavior.
 
 ### 1. Plan a Numbered Milestone
 
@@ -48,6 +48,7 @@ You provide:
 - the product or feature goal
 - relevant roadmap/context
 - constraints and preferences
+- creation of the milestone branch and planning-docs commit after you accept the plan
 
 The Coordinator should:
 
@@ -55,13 +56,10 @@ The Coordinator should:
 - plan a numbered milestone
 - create or update the standard document corpus
 - draft the current slice in detail and future slices lightly
-- create the milestone branch and commit planning docs when asked
 
 ### 2. Implement One Slice
 
-For each slice, use the Coordinator to prepare the slice branch and implementation prompt, then start an Executor Mode session.
-
-Note that each decision doc should contain information
+For each slice, create the slice branch yourself, then use the Coordinator to prepare the implementation prompt and start an Executor Mode session.
 
 <details>
 <summary>Suggested Prompt</summary>
@@ -86,12 +84,11 @@ End by reporting what changed, how to run it, how it was verified, screenshots/a
 You provide:
 
 - approval to start the slice
+- creation of the slice branch from the milestone branch
 - review feedback after implementation
 
 The Coordinator should:
 
-- check Git status
-- create the slice branch from the milestone branch
 - generate the Executor prompt from the current docs
 
 The Executor should:
@@ -105,7 +102,7 @@ The Executor should:
 
 ### 3. Review and Answer Open Questions
 
-After implementation, review the slice yourself. Then bring findings and open questions back to the Coordinator.
+After implementation, review the slice yourself. If the Executor reports open questions or implementation findings that should change the docs, bring them back to the Coordinator.
 
 <details>
 <summary>Suggested Prompt</summary>
@@ -135,15 +132,17 @@ The Coordinator should:
 
 ### 4. Commit and Merge the Slice
 
-After review and post-slice docs are complete, merge the slice branch back into the milestone branch.
+After review and any post-slice docs are complete, commit and merge the slice branch back into the milestone branch.
 
-The Coordinator should:
+You should:
 
-- check Git status before Git operations
+- check Git status before committing or merging
 - commit implementation changes with the standard message
-- commit post-slice docs with the standard message
+- if there are post-slice doc updates, commit them with the standard message
 - merge the slice branch into the milestone branch after review
 - stop if unrelated dirty files, conflicts, or unclear ownership appear
+
+The Coordinator may help process open questions and update docs, but it is not required for slices that leave no open questions.
 
 ### 5. Review and Merge the Milestone
 
@@ -166,13 +165,13 @@ You provide:
 
 - your understanding of what was built
 - acceptance or correction of the milestone outcome
+- the final milestone merge into trunk
 
 The Coordinator should:
 
 - compare the implementation against the milestone docs
 - identify gaps, drift, or missing verification
 - update docs if needed
-- merge the milestone branch into trunk after acceptance
 
 ## Git Behavior
 
@@ -183,6 +182,52 @@ main <- {milestoneNumber}-{milestoneName} <- {milestoneNumber}-{sliceNumber}-{sl
 ```
 
 If you only plan to have one milestone, you can use `main` as the milestone branch.
+
+Run `git status --short` before each branch switch, commit, merge, or push. Stop when unrelated dirty files, conflicts, or unclear ownership appear.
+
+Milestone setup:
+
+```sh
+git switch main
+git switch -c {milestoneNumber}-{milestoneName}
+git add docs/{milestoneNumber}-{milestoneName}
+git commit -m "Plan {milestoneNumber}-{milestoneName}"
+```
+
+Slice start:
+
+```sh
+git switch {milestoneNumber}-{milestoneName}
+git switch -c {milestoneNumber}-{sliceNumber}-{sliceName}
+```
+
+Slice finish:
+
+```sh
+git add {implementation-files}
+git commit -m "Impl {milestoneNumber}-{sliceNumber}-{sliceName}"
+```
+
+If post-slice docs changed:
+
+```sh
+git add docs/{milestoneNumber}-{milestoneName}
+git commit -m "Update docs based on {milestoneNumber}-{sliceNumber}-{sliceName} open question answers"
+```
+
+Merge the slice:
+
+```sh
+git switch {milestoneNumber}-{milestoneName}
+git merge {milestoneNumber}-{sliceNumber}-{sliceName}
+```
+
+Milestone finish:
+
+```sh
+git switch main
+git merge {milestoneNumber}-{milestoneName}
+```
 
 Recommended commit messages:
 
