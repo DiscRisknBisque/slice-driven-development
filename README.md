@@ -7,48 +7,28 @@ Slice Driven Development (SDD) is a workflow designed to strike a balance betwee
 - **Preserved Decision Traces**: Decision documents are generated through the process, so nothing is lost during development.
 - **Reduced Risk**: Any slice or milestone that goes bad can easily be discarded and replanned without losing a large amount of progress.
 
-Notably, you should already have an idea of what you're building. This isn't about composing the entire roadmap for your project, but about breaking down its implementation by milestones and slices. A milestone could be finishing the entire project in the case of a simple project or it could be a akin to a feature in a larger project.
+SDD works best when you keep the architectural decisions and review checkpoints, while the agent handles the repeatable mechanics. You steer the milestone, review each slice, and answer open questions. This isn't about composing the entire roadmap for your project, but about breaking down its implementation by milestones and slices. A milestone could be finishing the entire project in the case of a simple project or it could be akin to a feature in a larger project.
 
 ## Workflow
 
-The current workflow is mostly manual, but I plan to add more automation in the future.
+SDD uses two agent roles:
 
-### Planning and Implementing a Milestone
+- **Coordinator Mode**: long-running planning session that maintains docs, decisions, Git workflow, and next-slice planning.
+- **Executor Mode**: short implementation session that builds one slice, verifies it, and reports findings.
 
-1. Use `thinking-partner` and `slice-driven-development` skills to plan the milestone.
-2. Once you're satisfied, use `slice-driven-development` to produce the slices and standard document corpus.
-3. Checkout a new branch `{milestoneNumber}-{milestoneName}` and commit the slices and document corpus.
-4. Keep that planning agent session running (pinned in Codex) as the Operator.
-5. Checkout a new branch `{milestoneNumber}-{sliceNumber}-{sliceName}` to cleanly contain the slice implementation.
-6. Create a new chat session to implement the slice (use the "Implement a Slice" prompt below).
-7. Once the slice is implementended, review the code, request any edits as necessary.
-8. Commit the code to the slice branch. Recommended commit message: "Impl {milestoneNumber}-{sliceNumber}-{sliceName}"
-9. Answer the open questions with the operator (use the "Answer Open Questions" prompt). Discuss as needed, it should document the answers in decision documents. Then, if the Operator doesn't automatically, have it create the next slice.
-10. Commit the new documents to the slice branch. Recommended commit message: "Update docs based on {milestoneNumber}-{sliceNumber}-{sliceName} open question answers"
-11. Merge the slice branch into the feature branch.
-12. Loop back to step 5, checking out a branch for the next slice.
+The developer remains the reviewer and decision-maker. The agents handle repeatable workflow mechanics, but you approve plans, review code, answer open questions, and decide when to merge.
 
-### Assessing and Merging a Milestone
+### 1. Plan a Numbered Milestone
 
-1. Use the "Milestone Review" prompt to ensure successful implementation based on your instructions.
-2. Merge the `{milestoneNumber}-{milestoneName}` branch into `main` or your chosen trunk.
+Start a Coordinator Mode session with `thinking-partner` and `slice-driven-development`.
 
-## Git Behavior
-
-`main` <- `{milestoneNumber}-{milestoneName}` <- `{milestoneNumber}-{sliceNumber}-{sliceName}`
-
-If you only plan to have one milestone, you could use `main` as the milestone branch.
-
-## Prompts
-
-These are meant to be flexible starting points for you when using SDD. I recommend having a roadmap in in mind when building your product to make sure there's a guiding throughline for the milestones, but it's not essential, especially if your project is simple enough for one or two milestones.
-
-### Discuss & Plan a Milestone
+<details>
+<summary>Suggested Prompt</summary>
 
 ```markdown
-Let's think through the implementation of Diorama's next milestone, `02-runtime-answer-loop`. Once we've discussed we'll use `slice-driven-development` to create the necessary documents.
+Let's think through the implementation of the next milestone, `{milestoneNumber}-{milestoneName}`. Once we've discussed we'll use `slice-driven-development` to create the necessary documents.
 
-Diorama is the explanation layer for the AI era — a platform that transforms source material (AI coding sessions, product documentation, or any knowledge corpus) into seamless, multimodal, conversational walkthroughs. A Diorama is not a slide deck, not a recording, and not a chatbot. It is a narrated, navigable presentation where an AI agent guides the viewer through structured content — pulling up code, diagrams, browser views, and images in natural flow — while fielding questions grounded in the source material. The viewer forgets they are watching an LLM.
+`{projectDescription}`
 
 If you feel more depth is needed on any completed items, see the `docs` directory.
 
@@ -61,43 +41,156 @@ If you feel more depth is needed on any completed items, see the `docs` director
 `{roadmap}`
 ```
 
-### Implement a Slice
+</details>
+
+You provide:
+
+- the product or feature goal
+- relevant roadmap/context
+- constraints and preferences
+
+The Coordinator should:
+
+- identify itself as Coordinator Mode
+- plan a numbered milestone
+- create or update the standard document corpus
+- draft the current slice in detail and future slices lightly
+- create the milestone branch and commit planning docs when asked
+
+### 2. Implement One Slice
+
+For each slice, use the Coordinator to prepare the slice branch and implementation prompt, then start an Executor Mode session.
+
+Note that each decision doc should contain information
+
+<details>
+<summary>Suggested Prompt</summary>
 
 ```markdown
-We are building {brief-milestone-description} in verifiable vertical slices.
+We are building `{brief-milestone-description}` in verifiable vertical slices.
 
 Start by reading:
 
-- docs/{milestoneNumber}-{milestoneName}/README.md
-- docs/{milestoneNumber}-{milestoneName}/architecture.md
-- docs/{milestoneNumber}-{milestoneName}/slices/{current-slice}.md
-- docs/{milestoneNumber}-{milestoneName}/decisions/{decision}.md
+- `docs/{milestoneNumber}-{milestoneName}/README.md`
+- `docs/{milestoneNumber}-{milestoneName}/architecture.md`
+- `docs/{milestoneNumber}-{milestoneName}/slices/{current-slice}.md`
+- `docs/{milestoneNumber}-{milestoneName}/decisions/{decision}.md`
 
-Then implement only Slice {currentSliceNumber}.
+Then implement only Slice `{currentSliceNumber}`.
 
 End by reporting what changed, how to run it, how it was verified, screenshots/artifact paths, and any open questions remaining.
+```
 
-### Answer Open Questions
+</details>
 
-Here are my thoughts on `{featureOrProjectNameAndNumber}` Slice `{sliceNumber}`'s open questions. Answer any follow-up questions I added. Push back on my answers if you disagree.
+You provide:
+
+- approval to start the slice
+- review feedback after implementation
+
+The Coordinator should:
+
+- check Git status
+- create the slice branch from the milestone branch
+- generate the Executor prompt from the current docs
+
+The Executor should:
+
+- identify itself as Executor Mode
+- read the roadmap, architecture, current slice, and relevant decisions
+- implement only the current slice
+- organize code according to the product architecture, not the docs/slice structure
+- verify the result
+- report changed files, run instructions, verification evidence, artifacts, and open questions
+
+### 3. Review and Answer Open Questions
+
+After implementation, review the slice yourself. Then bring findings and open questions back to the Coordinator.
+
+<details>
+<summary>Suggested Prompt</summary>
+
+```markdown
+Here are my thoughts on Slice `{milestoneNumber}-{sliceNumber}-{sliceName}`'s open questions. Answer any follow-up questions I added. Push back on my answers if you disagree.
 
 - `{question}`
   - `{answer}`
 ```
 
-### Review a Milestone
+</details>
 
-It's important you provide your own understanding of the milestone here. Don't rely on the LLM alone to verify its work. They've been proven to smooth things over, especially when checking their own work.
+You provide:
+
+- code review feedback
+- answers to open questions
+- decisions where human judgment is needed
+
+The Coordinator should:
+
+- classify every open question as answered directly, answered indirectly, still open, or superseded
+- explicitly call out indirect answers
+- push back on risky answers
+- update architecture, slice, and decision docs
+- draft or refine the next slice
+
+### 4. Commit and Merge the Slice
+
+After review and post-slice docs are complete, merge the slice branch back into the milestone branch.
+
+The Coordinator should:
+
+- check Git status before Git operations
+- commit implementation changes with the standard message
+- commit post-slice docs with the standard message
+- merge the slice branch into the milestone branch after review
+- stop if unrelated dirty files, conflicts, or unclear ownership appear
+
+### 5. Review and Merge the Milestone
+
+When all slices are complete, perform a milestone review before merging to trunk.
+
+It's important you provide your own understanding of the milestone here. Don't rely solely on the LLM alone to verify its work. They've been proven to smooth things over, _especially_ when checking their own work.
+
+<details>
+<summary>Suggested Prompt</summary>
 
 ```markdown
 The `{numberOfSlices}` slices have all been implemented successfully. Examine the code base and compare it to our initially generated `README`. Then, tell me if my below understanding is correct.
 
-Based on my usage and inspection of the code myself, we have a solid core with a number of pieces implemented “manually“ using the coding agent. We need to extract those into behaviors that execute during the presentation in case of modification. Specifically, the harness can:
-
-- Create a presentation composed of multiple scenes using skills. The skills system can be expanded to cover new scene types.
-- Validate the presentation for correctness against our schema and using Chrome CDP.
-- Modify or create scenes in response to a viewer’s question.
+`{whatChanged}`
 ```
+
+</details>
+
+You provide:
+
+- your understanding of what was built
+- acceptance or correction of the milestone outcome
+
+The Coordinator should:
+
+- compare the implementation against the milestone docs
+- identify gaps, drift, or missing verification
+- update docs if needed
+- merge the milestone branch into trunk after acceptance
+
+## Git Behavior
+
+Branch topology:
+
+```txt
+main <- {milestoneNumber}-{milestoneName} <- {milestoneNumber}-{sliceNumber}-{sliceName}
+```
+
+If you only plan to have one milestone, you can use `main` as the milestone branch.
+
+Recommended commit messages:
+
+- Planning docs: `Plan {milestoneNumber}-{milestoneName}`
+- Slice implementation: `Impl {milestoneNumber}-{sliceNumber}-{sliceName}`
+- Post-slice docs: `Update docs based on {milestoneNumber}-{sliceNumber}-{sliceName} open question answers`
+
+The docs are milestone and slice based. The product code should follow the best architecture for the product itself, not mirror the milestone or slice names unless that structure is genuinely correct for the product.
 
 ## Special Thanks
 
