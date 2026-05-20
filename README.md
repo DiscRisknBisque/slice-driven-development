@@ -2,12 +2,21 @@
 
 Slice Driven Development (SDD) is a workflow designed to strike a balance between agentic execution and human in the loop for agentic coding. It provides the following benefits:
 
+- **Greater Reliability**: While LLMs + coding harnesses generally understand slice-based development methodology, they don't take certain actions consistently, like failing to capture decisions. For eval results see [Why Use This?](#why-use-this).
 - **You Maintain Control**: Vertical slices ensure implementation can be verified by you, the developer. Each slice is guided by questions you answer at the end of each previous slice.
 - **Reduced Planning Fatigue**: Each slice is easier to consume than one long architecture document.
 - **Preserved Decision Traces**: Decision documents are generated through the process, so nothing is lost during development.
 - **Reduced Risk**: Any slice or milestone that goes bad can easily be discarded and replanned without losing a large amount of progress.
 
 SDD works best when you keep the architectural decisions and review checkpoints, while the agent handles the repeatable mechanics. You steer the milestone, review each slice, and answer open questions. This isn't about composing the entire roadmap for your project, but about breaking down its implementation by milestones and slices. A milestone could be finishing the entire project in the case of a simple project or it could be akin to a feature in a larger project.
+
+## Installation
+
+SDD is built on the open Agent Skills standard. Works with Claude Code, Cursor, Windsurf, Cline, GitHub Copilot, and any AI agent that supports the standard.
+
+```bash
+npx skills add discrisknbisque/slice-driven-development
+```
 
 ## Workflow
 
@@ -154,7 +163,7 @@ It's important you provide your own understanding of the milestone here. Don't r
 <summary>Suggested Prompt</summary>
 
 ```markdown
-The `{numberOfSlices}` slices have all been implemented successfully. Examine the code base and compare it to our initially generated `README`. Then, tell me if my below understanding is correct.
+The `{numberOfSlices}` slices for Milestone `{milestoneNumber}` have all been implemented successfully. Examine the code base and compare it to our initially generated `README`. Then, tell me if my below understanding is correct.
 
 `{whatChanged}`
 ```
@@ -236,6 +245,34 @@ Recommended commit messages:
 - Post-slice docs: `Update docs based on {milestoneNumber}-{sliceNumber}-{sliceName} open question answers`
 
 The docs are milestone and slice based. The product code should follow the best architecture for the product itself, not mirror the milestone or slice names unless that structure is genuinely correct for the product.
+
+## Why Use This?
+
+This skill makes coding harnesses stick to a slice-based development methodology more thoroughly and normalizes their inputs and outputs at each slice. I've performed an eval of this skill vs. without using Claude Code, the results of which you can see below:
+
+| Assertion               | With Skill | Without Skill | Discriminating?                                                        |
+| ----------------------- | ---------- | ------------- | ---------------------------------------------------------------------- |
+| Mode identification     | 3/3        | 0/3           | Yes — strongest differentiator                                         |
+| Question classification | 1/1        | 0/1           | Yes — skill-only behavior                                              |
+| Decision records        | 2/2        | 1/2           | Mostly — baseline got one in planning, missed one in questions         |
+| Next slice drafted      | 2/2        | 1/2           | Mostly — baseline planned slices but didn't draft next after questions |
+| Pushback (crash + TOML) | 2/2        | 2/2           | No — Claude does this naturally                                        |
+
+### What the skill reliably adds:
+
+- Mode identification (100% vs 0%)
+- Question classification vocabulary
+- Decision records as standalone files
+- Next-slice drafting after question processing
+- Progressive detail (light future slices)
+- Consistent two-digit numbering
+
+### What coding harnesses already do fine without the skill:
+
+- Pushback on risky answers (crash, TOML scope creep)
+- Doc structure creation (README, architecture, slices)
+- Scope discipline during implementation
+- End-of-slice reporting
 
 ## Special Thanks
 

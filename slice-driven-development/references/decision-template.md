@@ -1,7 +1,7 @@
 # Decision Template
 
 ```md
-# Decision NNNN: Title
+# Decision NN: Title
 
 ## Status
 

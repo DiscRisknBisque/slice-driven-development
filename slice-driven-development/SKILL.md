@@ -16,7 +16,7 @@ plan -> slice brief -> implementation session -> post-slice questions -> decisio
 ## Core Rules
 
 - Prefer vertical slices that prove end-to-end behavior.
-- Keep only the current and next slice implementation-detailed.
+- Keep only the current and next slice implementation-detailed. Future slices should contain only Goal, Scope, Non-Goals, and Open Questions. Do not add Implementation Tasks, Architecture Touchpoints, or detailed Verification criteria to a slice until it becomes the current or next slice.
 - Do not build ahead unless the current slice cannot work without a small prerequisite.
 - Treat post-implementation questions as design data.
 - Capture user answers as durable docs, not only chat history.
@@ -92,7 +92,8 @@ docs/<milestone>/
     00-...
     01-...
   decisions/
-    0001-...
+    00-...
+    01-...
 ```
 
 Use:
@@ -104,6 +105,7 @@ Use:
 
 Conventions:
 
+- Use consistent two-digit numbering for milestones, slices, and decisions (e.g., `00-`, `01-`, `02-`). The milestone directory, slice files, and decision files all follow the same scheme. Do not use four-digit prefixes for decisions or letter prefixes for milestones.
 - If the user has not specified milestone numbering, assign stable milestone numbers.
 - Slice and decision documents should already be numbered.
 - The docs structure is milestone and slice based, but the product code should use the architecture that best fits the product domain, framework, and runtime.
