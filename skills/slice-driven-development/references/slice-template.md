@@ -19,6 +19,10 @@ What the user or reviewer can run, inspect, or experience when the slice is comp
 
 - What is explicitly not included yet.
 
+## Relevant Decisions
+
+- Decision records or accepted guardrails that affect this slice.
+
 ## Architecture Touchpoints
 
 Expected files, modules, contracts, schemas, or runtime surfaces.

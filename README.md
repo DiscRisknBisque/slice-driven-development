@@ -1,279 +1,389 @@
-# Slice Driven Development
+# Slice-Driven Development
 
-Slice Driven Development (SDD) is a workflow designed to strike a balance between agentic execution and human in the loop for agentic coding. It provides the following benefits:
+Slice-Driven Development (SDD) is a Codex plugin for steering agentic coding through human-reviewed, verifiable vertical slices.
 
-- **Greater Reliability**: While LLMs + coding harnesses generally understand slice-based development methodology, they don't take certain actions consistently, like failing to capture decisions. For eval results see [Why Use This?](#why-use-this).
-- **You Maintain Control**: Vertical slices ensure implementation can be verified by you, the developer. Each slice is guided by questions you answer at the end of each previous slice.
-- **Reduced Planning Fatigue**: Each slice is easier to consume than one long architecture document.
-- **Preserved Decision Traces**: Decision documents are generated through the process, so nothing is lost during development.
-- **Reduced Risk**: Any slice or milestone that goes bad can easily be discarded and replanned without losing a large amount of progress.
+It combines:
 
-SDD works best when you keep the architectural decisions and review checkpoints, while the agent handles the repeatable mechanics. You steer the milestone, review each slice, and answer open questions. This isn't about composing the entire roadmap for your project, but about breaking down its implementation by milestones and slices. A milestone could be finishing the entire project in the case of a simple project or it could be akin to a feature in a larger project.
+- a `slice-driven-development` skill for Coordinator and Executor behavior
+- Codex Run actions for deterministic branch, commit, merge, and prompt handoff steps
+- Codex app-server calls for starting Coordinator and Executor threads
+- workflow references for milestone planning, slice execution, post-slice decisions, and milestone review
+- artifact lifecycle guidance for condensing provisional verification and examples
+- a Git preflight helper for debugging or manual fallback
+
+SDD is designed for projects where you want agents to move quickly without losing architectural memory, review checkpoints, or branch discipline.
+
+## Why Use It
+
+- **Reliable workflow mechanics**: branch switches, commits, merges, and prompt handoffs are handled by deterministic actions.
+- **Human control**: each slice ends in something runnable, reviewable, and small enough to reason about.
+- **Preserved decisions**: milestone, slice, architecture, and decision docs are durable project memory.
+- **Cleaner executable surface**: provisional slice verification, examples, fixtures, and scripts are condensed before milestone merge.
+- **Portable workflow state**: `sdd/index.json` records milestone and slice names, ordering, and statuses for any harness.
+- **Less prompt assembly**: project description, roadmap, milestone names, slice names, and relevant decisions are auto-filled from `sdd/`.
+
+## Plugin Layout
+
+```txt
+.codex-plugin/
+  plugin.json
+skills/
+  slice-driven-development/
+    SKILL.md
+    agents/openai.yaml
+    references/
+      actions.md
+      artifact-lifecycle.md
+      decision-template.md
+      git-ceremony.md
+      prompts.md
+      slice-template.md
+      workflow.md
+scripts/
+  sdd-action.mjs
+  sdd-git-preflight.mjs
+```
+
+The skill is the judgment layer. The action runner handles repeatable mechanics: Git transitions, prompt auto-fill, and Codex app-server thread calls.
 
 ## Installation
 
-SDD is built on the open Agent Skills standard. Works with Claude Code, Cursor, Windsurf, Cline, GitHub Copilot, and any AI agent that supports the standard.
+For Codex local development, add this plugin to a local marketplace entry. A home-local marketplace convention looks like:
+
+```txt
+~/.agents/plugins/marketplace.json
+~/plugins/slice-driven-development -> <this repo>
+```
+
+The marketplace entry should point to `./plugins/slice-driven-development`.
+
+The legacy skill-only installation is still useful for non-plugin environments that support Agent Skills:
 
 ```bash
 npx skills add discrisknbisque/slice-driven-development
 ```
 
+## Project Setup
+
+In each project that should use SDD action buttons, create the shared planning inputs:
+
+```txt
+sdd/
+  project-description.md
+  roadmap.md
+```
+
+Then ingest the roadmap and any existing SDD milestone folders into the portable SDD ledger:
+
+```bash
+node <plugin-root>/scripts/sdd-action.mjs ingest-plan
+```
+
+Then install the project-local Codex actions:
+
+```bash
+node <plugin-root>/scripts/sdd-action.mjs install-actions
+```
+
+This creates or updates `.codex/environments/environment.toml` with:
+
+- `SDD Actions Ready`
+- `Ingest SDD Plan`
+- `Plan Milestone`
+- `Start Milestone`
+- `Start Slice`
+- `Answer Questions`
+- `Review Milestone`
+- `Close Milestone`
+
+`SDD Actions Ready` is intentionally side-effect free. Some Codex local environment flows may run the first action when an environment is selected; making the first action a status check prevents accidental branch changes, commits, or thread creation.
+
+The action runner stores shared workflow truth in `sdd/index.json`. Local Codex thread ids live in `.codex/sdd-state.json`; deleting that file must not change the inferred milestone, slice, status, branch target, or next action.
+
+When the managed Codex app-server control socket is unavailable, actions start a local loopback app-server on `ws://127.0.0.1:47891`. If both transports fail, actions write the filled prompt to `.codex/sdd-prompts/` instead of dropping it.
+
+## SDD Directory
+
+Milestones live under `sdd/`:
+
+```txt
+sdd/
+  project-description.md
+  roadmap.md
+  index.json
+  <milestone>/
+    README.md
+    architecture.md
+    slices/
+      00-...
+      01-...
+    decisions/
+      00-...
+      01-...
+```
+
+Use consistent two-digit numbering for milestones, slices, and decisions. `sdd/index.json` records the portable milestone and slice ledger. Slice templates include a `Relevant Decisions` section so Executor threads can see the decision records that matter for the slice.
+
 ## Workflow
 
 SDD uses two agent roles:
 
-- **Coordinator Mode**: long-running planning session that maintains docs, decisions, and next-slice planning.
-- **Executor Mode**: short implementation session that builds one slice, verifies it, and reports findings.
+- **Coordinator Mode**: long-running planning and architecture session. It maintains milestone docs, decisions, post-slice questions, next-slice planning, milestone review, and cleanup recommendations.
+- **Executor Mode**: focused implementation session. It implements one slice, verifies it, reports artifact disposition, and returns open questions.
 
-The developer remains the reviewer and decision-maker. You also own the Git ceremony: branches, commits, and merges are explicit human checkpoints rather than hidden agent behavior.
+The normal action flow is:
 
-### 1. Plan a Numbered Milestone
-
-Start a Coordinator Mode session with `thinking-partner` and `slice-driven-development`.
-
-<details>
-<summary>Suggested Prompt</summary>
-
-```markdown
-Let's think through the implementation of the next milestone, `{milestoneNumber}-{milestoneName}`. Once we've discussed we'll use `slice-driven-development` to create the necessary documents.
-
-`{projectDescription}`
-
-If you feel more depth is needed on any completed items, see the `docs` directory.
-
-**Completed Milestones**
-
-`{completedMilestones}`
-
-**Roadmap**
-
-`{roadmap}`
+```txt
+Ingest SDD Plan
+-> Plan Milestone
+-> Start Milestone
+-> Start Slice
+-> Executor implements one slice
+-> Answer Questions, when needed
+-> Start Slice for the next slice
+-> Review Milestone
+-> Close Milestone
 ```
 
-</details>
+### Ingest SDD Plan
 
-You provide:
+Creates or updates `sdd/index.json`.
 
-- the product or feature goal
-- relevant roadmap/context
-- constraints and preferences
-- creation of the milestone branch and planning-docs commit after you accept the plan
+The action:
 
-The Coordinator should:
+- reads `sdd/roadmap.md`
+- treats multiple H1 headings as milestones
+- treats H2 headings as milestones when the roadmap has one document-title H1
+- reconciles existing `sdd/<NN>-.../` milestone directories
+- reads slice files under existing milestone `slices/` directories
+- preserves existing statuses already recorded in `sdd/index.json`
+- marks newly discovered existing directories as `unknown` rather than pretending they are completed
 
-- identify itself as Coordinator Mode
-- plan a numbered milestone
-- create or update the standard document corpus
-- draft the current slice in detail and future slices lightly
+This action is safe to run for a new SDD project or for an existing in-progress project being adopted into SDD.
 
-### 2. Implement One Slice
+The normal action flow after ingestion is:
 
-For each slice, create the slice branch yourself, then use the Coordinator to prepare the implementation prompt and start an Executor Mode session.
-
-<details>
-<summary>Suggested Prompt</summary>
-
-```markdown
-We are building `{brief-milestone-description}` in verifiable vertical slices.
-
-Start by reading:
-
-- `docs/{milestoneNumber}-{milestoneName}/README.md`
-- `docs/{milestoneNumber}-{milestoneName}/architecture.md`
-- `docs/{milestoneNumber}-{milestoneName}/slices/{current-slice}.md`
-- `docs/{milestoneNumber}-{milestoneName}/decisions/{decision}.md`
-
-Then implement only Slice `{currentSliceNumber}`.
-
-End by reporting what changed, how to run it, how it was verified, screenshots/artifact paths, and any open questions remaining.
+```txt
+Plan Milestone
+-> Start Milestone
+-> Start Slice
+-> Executor implements one slice
+-> Answer Questions, when needed
+-> Start Slice for the next slice
+-> Review Milestone
+-> Close Milestone
 ```
 
-</details>
+### Plan Milestone
 
-You provide:
+Starts a new Coordinator thread.
 
-- approval to start the slice
-- creation of the slice branch from the milestone branch
-- review feedback after implementation
+The action:
 
-The Coordinator should:
+- reads `sdd/project-description.md`
+- reads `sdd/roadmap.md`
+- reads `sdd/index.json` when present
+- fills the next milestone number and name
+- asks the Coordinator to create or update `sdd/<milestone>/`
 
-- generate the Executor prompt from the current docs
+The user discusses the milestone with the Coordinator until the plan is ready.
 
-The Executor should:
+### Start Milestone
 
-- identify itself as Executor Mode
-- read the roadmap, architecture, current slice, and relevant decisions
-- implement only the current slice
-- organize code according to the product architecture, not the docs/slice structure
-- verify the result
-- report changed files, run instructions, verification evidence, artifacts, and open questions
+Runs after the milestone plan is accepted.
 
-### 3. Review and Answer Open Questions
+The action:
 
-After implementation, review the slice yourself. If the Executor reports open questions or implementation findings that should change the docs, bring them back to the Coordinator.
+- finds the next milestone from `sdd/index.json`, or falls back to existing milestone directories
+- updates `sdd/index.json` to mark the milestone active
+- if no milestone directory exists yet, starts the next indexed milestone branch, falling back to `00-first-milestone`, and waits for docs to be created
+- creates or switches to the milestone branch named `<milestoneNumber>-<milestoneName>`
+- adds the milestone docs and `sdd/index.json`
+- commits `Plan <milestoneNumber>-<milestoneName>`
 
-<details>
-<summary>Suggested Prompt</summary>
+Set `SDD_MILESTONE_NAME=<name>` before running `Start Milestone` to use a different fallback name for the first branch when no milestone directory exists yet.
 
-```markdown
-Here are my thoughts on Slice `{milestoneNumber}-{sliceNumber}-{sliceName}`'s open questions. Answer any follow-up questions I added. Push back on my answers if you disagree.
+### Start Slice
 
-- `{question}`
-  - `{answer}`
-```
+Runs when the user is ready for an Executor thread.
 
-</details>
+If run from the milestone branch, the action:
 
-You provide:
+- treats the next slice as `00`
+- marks the slice active in `sdd/index.json`
+- commits `Start <milestoneNumber>-<sliceNumber>-<sliceName>`
+- creates or switches to `<milestoneNumber>-<sliceNumber>-<sliceName>`
+- starts a new Executor thread with the slice prompt
 
-- code review feedback
-- answers to open questions
-- decisions where human judgment is needed
+If run from a slice branch with no open questions, the action:
 
-The Coordinator should:
+- marks the current slice completed in `sdd/index.json`
+- commits current changes as `Impl <milestoneNumber>-<sliceNumber>-<sliceName>`
+- switches to the milestone branch
+- merges the completed slice branch
+- marks the next slice active in `sdd/index.json`
+- commits `Start <milestoneNumber>-<sliceNumber>-<sliceName>`
+- creates or switches to the next slice branch
+- starts a new Executor thread
 
-- classify every open question as answered directly, answered indirectly, still open, or superseded
-- explicitly call out indirect answers
-- push back on risky answers
-- update architecture, slice, and decision docs
-- draft or refine the next slice
+Executor Mode must not switch branches, commit, merge, or push. The actions own those steps.
 
-### 4. Commit and Merge the Slice
+### Answer Questions
 
-After review and any post-slice docs are complete, commit and merge the slice branch back into the milestone branch.
+Runs from a slice branch after the user has discussed open questions with the Coordinator.
 
-You should:
+The action:
 
-- check Git status before committing or merging
-- commit implementation changes with the standard message
-- if there are post-slice doc updates, commit them with the standard message
-- merge the slice branch into the milestone branch after review
-- stop if unrelated dirty files, conflicts, or unclear ownership appear
+- marks the slice completed in `sdd/index.json`
+- commits current changes as `Ansr <milestoneNumber>-<sliceNumber>-<sliceName>`
+- switches to the milestone branch
+- merges the slice branch
 
-The Coordinator may help process open questions and update docs, but it is not required for slices that leave no open questions.
+### Review Milestone
 
-### 5. Review and Merge the Milestone
+Runs when all slices in the milestone have been implemented.
 
-When all slices are complete, perform a milestone review before merging to trunk.
+The action:
 
-It's important you provide your own understanding of the milestone here. Don't rely solely on the LLM alone to verify its work. They've been proven to smooth things over, _especially_ when checking their own work.
+- sends the milestone review prompt to the stored Coordinator thread
+- fills milestone docs, slice count, and decision paths
+- leaves `<whatChanged>` for the user to replace with their own understanding
 
-<details>
-<summary>Suggested Prompt</summary>
+If no Coordinator thread id is stored, it starts a new review thread.
 
-```markdown
-The `{numberOfSlices}` slices for Milestone `{milestoneNumber}` have all been implemented successfully. Examine the code base and compare it to our initially generated `README`. Then, tell me if my below understanding is correct.
+### Close Milestone
 
-`{whatChanged}`
-```
+Runs from the milestone branch after review and cleanup are complete.
 
-</details>
+The action:
 
-You provide:
+- marks the milestone closed in `sdd/index.json`
+- commits current changes as `Impl <milestoneNumber>-<milestoneName>`
+- switches to `main`
+- merges the milestone branch
 
-- your understanding of what was built
-- acceptance or correction of the milestone outcome
-- the final milestone merge into trunk
+Set `SDD_TRUNK=<branch>` when the project uses a trunk branch other than `main`.
 
-The Coordinator should:
-
-- compare the implementation against the milestone docs
-- identify gaps, drift, or missing verification
-- update docs if needed
-
-## Git Behavior
+## Branches And Commits
 
 Branch topology:
 
 ```txt
-main <- {milestoneNumber}-{milestoneName} <- {milestoneNumber}-{sliceNumber}-{sliceName}
+trunk <- milestone branch <- slice branch
 ```
 
-If you only plan to have one milestone, you can use `main` as the milestone branch.
+Example:
 
-Run `git status --short` before each branch switch, commit, merge, or push. Stop when unrelated dirty files, conflicts, or unclear ownership appear.
-
-Milestone setup:
-
-```sh
-git switch main
-git switch -c {milestoneNumber}-{milestoneName}
-git add docs/{milestoneNumber}-{milestoneName}
-git commit -m "Plan {milestoneNumber}-{milestoneName}"
+```txt
+main <- 04-component-registry-and-scene-affordances-v1 <- 04-00-component-registry-contract-and-dom-adapter
 ```
 
-Slice start:
+Commit messages:
 
-```sh
-git switch {milestoneNumber}-{milestoneName}
-git switch -c {milestoneNumber}-{sliceNumber}-{sliceName}
+- Milestone plan: `Plan <milestoneNumber>-<milestoneName>`
+- Slice start ledger update: `Start <milestoneNumber>-<sliceNumber>-<sliceName>`
+- Slice implementation: `Impl <milestoneNumber>-<sliceNumber>-<sliceName>`
+- Post-slice answers: `Ansr <milestoneNumber>-<sliceNumber>-<sliceName>`
+- Milestone close: `Impl <milestoneNumber>-<milestoneName>`
+
+## Codex App-Server
+
+The action runner uses the Codex app-server JSON-RPC API. It first tries:
+
+```bash
+codex app-server proxy
 ```
 
-Slice finish:
+If that managed control socket is unavailable, it starts or reuses:
 
-```sh
-git add {implementation-files}
-git commit -m "Impl {milestoneNumber}-{sliceNumber}-{sliceName}"
+```bash
+codex app-server --listen ws://127.0.0.1:47891
 ```
 
-If post-slice docs changed:
+It calls:
 
-```sh
-git add docs/{milestoneNumber}-{milestoneName}
-git commit -m "Update docs based on {milestoneNumber}-{sliceNumber}-{sliceName} open question answers"
+- `thread/start` for Coordinator and Executor threads
+- `thread/name/set` for readable thread names
+- `turn/start` for initial prompts and Coordinator follow-ups
+
+If both app-server transports are unavailable, the action writes the filled prompt to `.codex/sdd-prompts/`. This keeps the Git workflow usable even when thread creation is unavailable in the current Codex install.
+
+## Manual Debugging
+
+The preferred path is `scripts/sdd-action.mjs`, but the plugin still includes a conservative preflight helper:
+
+```bash
+node scripts/sdd-git-preflight.mjs --stage <stage> \
+  --trunk main \
+  --milestone-branch <milestone-branch> \
+  --slice-branch <slice-branch>
 ```
 
-Merge the slice:
+The helper inspects branch and working-tree state, then prints suggested next commands. Use it when debugging a blocked transition or adapting an older project.
 
-```sh
-git switch {milestoneNumber}-{milestoneName}
-git merge {milestoneNumber}-{sliceNumber}-{sliceName}
+## Artifact Lifecycle
+
+Slice-created artifacts are provisional by default:
+
+- slice-specific verification scripts
+- scratch examples and demos
+- copied fixtures or scenes
+- mock responses and request files
+- generated verification output
+- package scripts named after slice numbers
+- temporary working directories
+
+At milestone review, classify each as:
+
+- `promote`: keep as durable regression/evaluation coverage
+- `canonical example`: keep as the clearest current example
+- `merge`: fold duplicated checks into a broader durable command
+- `archive in docs`: preserve the rationale but remove executable clutter
+- `delete`: remove scratch, superseded, generated, or confusing artifacts
+
+Prefer durable behavior-level commands after condensation, such as:
+
+```txt
+verify:presentation
+verify:runtime-answer-loop
+verify:presenter-agent
+test:evaluations
+demo:presentation
 ```
 
-Milestone finish:
+## Existing Projects
 
-```sh
-git switch main
-git merge {milestoneNumber}-{milestoneName}
+For a project that already used the old skill, migrate the planning directory to `sdd/` first, then run:
+
+```bash
+node <plugin-root>/scripts/sdd-action.mjs ingest-plan
+node <plugin-root>/scripts/sdd-action.mjs install-actions
 ```
 
-Recommended commit messages:
+Before pressing an action, confirm:
 
-- Planning docs: `Plan {milestoneNumber}-{milestoneName}`
-- Slice implementation: `Impl {milestoneNumber}-{sliceNumber}-{sliceName}`
-- Post-slice docs: `Update docs based on {milestoneNumber}-{sliceNumber}-{sliceName} open question answers`
+- `sdd/project-description.md` exists
+- `sdd/roadmap.md` exists
+- `sdd/index.json` exists after ingestion
+- milestone directories use `<NN>-<milestoneName>`
+- slice files use `<NN>-<sliceName>.md`
+- the current branch matches the action you intend to run
 
-The docs are milestone and slice based. The product code should follow the best architecture for the product itself, not mirror the milestone or slice names unless that structure is genuinely correct for the product.
+Use `sdd-git-preflight.mjs` if the current branch state is ambiguous.
 
-## Why Use This?
+## Eval Notes
 
-This skill makes coding harnesses stick to a slice-based development methodology more thoroughly and normalizes their inputs and outputs at each slice. I've performed an eval of this skill vs. without using Claude Code, the results of which you can see below:
+Earlier skill-only evals showed SDD improved:
 
-| Assertion               | With Skill | Without Skill | Discriminating?                                                        |
-| ----------------------- | ---------- | ------------- | ---------------------------------------------------------------------- |
-| Mode identification     | 3/3        | 0/3           | Yes — strongest differentiator                                         |
-| Question classification | 1/1        | 0/1           | Yes — skill-only behavior                                              |
-| Decision records        | 2/2        | 1/2           | Mostly — baseline got one in planning, missed one in questions         |
-| Next slice drafted      | 2/2        | 1/2           | Mostly — baseline planned slices but didn't draft next after questions |
-| Pushback (crash + TOML) | 2/2        | 2/2           | No — Claude does this naturally                                        |
+- mode identification
+- question classification
+- decision records
+- next-slice drafting
+- progressive detail
+- consistent two-digit numbering
 
-### What the skill reliably adds:
-
-- Mode identification (100% vs 0%)
-- Question classification vocabulary
-- Decision records as standalone files
-- Next-slice drafting after question processing
-- Progressive detail (light future slices)
-- Consistent two-digit numbering
-
-### What coding harnesses already do fine without the skill:
-
-- Pushback on risky answers (crash, TOML scope creep)
-- Doc structure creation (README, architecture, slices)
-- Scope discipline during implementation
-- End-of-slice reporting
+The current plugin keeps those behaviors and adds action-driven Git plus app-server prompt handoff.
 
 ## Special Thanks
 
-Thank you to [Matt Now (@mattnowdev)](https://github.com/mattnowdev) for creating the [thinking-partner](https://github.com/mattnowdev/thinking-partner/tree/main?tab=readme-ov-file) skill, which I've found extremely helpful here and elsewhere.
+Thank you to [Matt Now (@mattnowdev)](https://github.com/mattnowdev) for creating the [thinking-partner](https://github.com/mattnowdev/thinking-partner/tree/main?tab=readme-ov-file) skill, which has been useful when shaping SDD's planning and review loops.

@@ -1,0 +1,42 @@
+{
+  "name": "slice-driven-development",
+  "version": "0.1.0",
+  "description": "Plan and execute agentic coding work through verifiable vertical slices, deterministic Codex actions, durable decision records, and milestone cleanup gates.",
+  "author": {
+    "name": "discrisknbisque",
+    "url": "https://github.com/discrisknbisque"
+  },
+  "homepage": "https://github.com/discrisknbisque/slice-driven-development",
+  "repository": "https://github.com/discrisknbisque/slice-driven-development",
+  "license": "MIT",
+  "keywords": [
+    "agentic-coding",
+    "vertical-slices",
+    "workflow",
+    "architecture",
+    "decision-records",
+    "git",
+    "codex-actions"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Slice-Driven Development",
+    "shortDescription": "Plan agentic coding through verifiable slices",
+    "longDescription": "Slice-Driven Development helps Codex coordinate planning, implementation, deterministic action-driven Git transitions, post-slice decisions, verification, and milestone cleanup for human-reviewed agentic coding projects.",
+    "developerName": "discrisknbisque",
+    "category": "Coding",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://github.com/discrisknbisque/slice-driven-development",
+    "defaultPrompt": [
+      "Plan this project with Slice-Driven Development",
+      "Prepare the next vertical slice",
+      "Review this milestone and condense verification"
+    ],
+    "brandColor": "#2563EB",
+    "screenshots": []
+  }
+}
