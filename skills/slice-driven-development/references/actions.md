@@ -76,6 +76,8 @@ sdd/
 
 ### Start Slice
 
+Run this only after the slice's open questions have been answered or deliberately deferred.
+
 If the current branch is the milestone branch:
 
 - Treats the next slice as `00`.
@@ -84,7 +86,7 @@ If the current branch is the milestone branch:
 - Creates or switches to `<milestoneNumber>-<sliceNumber>-<sliceName>`.
 - Starts a new Executor thread with the recommended prompt.
 
-If the current branch is a slice branch:
+If the current branch is a slice branch and no implementation findings need Coordinator handling:
 
 - Marks the current slice completed in `sdd/index.json`.
 - Commits current changes as `Impl <milestoneNumber>-<sliceNumber>-<sliceName>`.
@@ -96,10 +98,11 @@ If the current branch is a slice branch:
 
 ### Answer Questions
 
-- Runs from a slice branch after the user has discussed open questions with the Coordinator.
+- Runs from a slice branch after the user has discussed implementation findings with the Coordinator and those findings produced doc or decision updates.
 - Marks the slice completed in `sdd/index.json`.
 - Commits current changes as `Ansr <milestoneNumber>-<sliceNumber>-<sliceName>`.
 - Switches to the milestone branch and merges the slice branch.
+- Leaves the next slice to be prepared from the milestone branch before `Start Slice` runs again.
 
 ### Review Milestone
 

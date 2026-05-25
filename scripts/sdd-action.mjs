@@ -33,7 +33,7 @@ Actions:
   plan-milestone    Start a Coordinator thread for the next milestone
   start-milestone   Create/switch milestone branch and commit accepted planning docs
   start-slice       Commit/merge the previous slice if needed, then create the next slice branch and thread
-  answer-questions  Commit post-slice answers and merge the slice branch into the milestone branch
+  answer-questions  Commit answer-driven docs and merge the slice branch into the milestone branch
   review-milestone  Add a milestone review prompt to the Coordinator thread
   close-milestone   Commit reviewed milestone changes and merge the milestone branch into main
 
@@ -663,7 +663,7 @@ End by reporting:
 - how it was verified
 - artifact disposition notes for provisional verification, examples, fixtures, scripts, and generated outputs
 - screenshots/artifact paths, if any
-- remaining open questions for the Coordinator`;
+- implementation findings or remaining questions for planning`;
 }
 
 function reviewPrompt(root, milestone) {

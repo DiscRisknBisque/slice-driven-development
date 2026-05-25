@@ -1,7 +1,7 @@
 interface:
   display_name: "Slice-Driven Development"
   short_description: "Plan agentic coding through verifiable slices."
-  default_prompt: "Use $slice-driven-development to plan this project as verifiable vertical slices with SDD docs, decision records, post-slice iteration, action-driven Git transitions, and milestone cleanup."
+  default_prompt: "Use $slice-driven-development to plan this project as verifiable vertical slices with SDD docs, decision records, pre-execution question handling, action-driven Git transitions, and milestone cleanup."
 
 policy:
   allow_implicit_invocation: true

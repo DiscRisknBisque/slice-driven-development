@@ -7,7 +7,7 @@ It combines:
 - a `slice-driven-development` skill for Coordinator and Executor behavior
 - Codex Run actions for deterministic branch, commit, merge, and prompt handoff steps
 - Codex app-server calls for starting Coordinator and Executor threads
-- workflow references for milestone planning, slice execution, post-slice decisions, and milestone review
+- workflow references for milestone planning, pre-execution question handling, slice execution, and milestone review
 - artifact lifecycle guidance for condensing provisional verification and examples
 - a Git preflight helper for debugging or manual fallback
 
@@ -128,22 +128,24 @@ Use consistent two-digit numbering for milestones, slices, and decisions. `sdd/i
 
 SDD uses two agent roles:
 
-- **Coordinator Mode**: long-running planning and architecture session. It maintains milestone docs, decisions, post-slice questions, next-slice planning, milestone review, and cleanup recommendations.
-- **Executor Mode**: focused implementation session. It implements one slice, verifies it, reports artifact disposition, and returns open questions.
+- **Coordinator Mode**: long-running planning and architecture session. It maintains milestone docs, decisions, slice-readiness questions, next-slice planning, milestone review, and cleanup recommendations.
+- **Executor Mode**: focused implementation session. It implements one slice, verifies it, reports artifact disposition, and returns implementation findings or questions that affect later planning.
 
-The normal action flow is:
+The normal workflow is:
 
 ```txt
 Ingest SDD Plan
 -> Plan Milestone
 -> Start Milestone
--> Start Slice
--> Executor implements one slice
--> Answer Questions, when needed
--> Start Slice for the next slice
+-> Answer Open Questions for the slice
+-> Execute Slice (Start Slice action, then Executor implementation)
+-> Record implementation findings, when needed
+-> Repeat: Answer Open Questions, then Execute Slice
 -> Review Milestone
 -> Close Milestone
 ```
+
+Open questions are a readiness gate for the slice about to execute. They should be answered or explicitly deferred before the Executor starts that slice. The `Answer Questions` action is still available, but it is a Git/action convenience for the case where implementation findings caused Coordinator doc or decision updates on the slice branch; it commits and merges those updates, then leaves the next slice to be prepared from the milestone branch.
 
 ### Ingest SDD Plan
 
@@ -161,15 +163,15 @@ The action:
 
 This action is safe to run for a new SDD project or for an existing in-progress project being adopted into SDD.
 
-The normal action flow after ingestion is:
+The normal workflow after ingestion is:
 
 ```txt
 Plan Milestone
 -> Start Milestone
--> Start Slice
--> Executor implements one slice
--> Answer Questions, when needed
--> Start Slice for the next slice
+-> Answer Open Questions for the slice
+-> Execute Slice (Start Slice action, then Executor implementation)
+-> Record implementation findings, when needed
+-> Repeat: Answer Open Questions, then Execute Slice
 -> Review Milestone
 -> Close Milestone
 ```
@@ -205,7 +207,7 @@ Set `SDD_MILESTONE_NAME=<name>` before running `Start Milestone` to use a differ
 
 ### Start Slice
 
-Runs when the user is ready for an Executor thread.
+Runs when the current slice's open questions have been answered or deliberately deferred and the user is ready for an Executor thread.
 
 If run from the milestone branch, the action:
 
@@ -215,7 +217,7 @@ If run from the milestone branch, the action:
 - creates or switches to `<milestoneNumber>-<sliceNumber>-<sliceName>`
 - starts a new Executor thread with the slice prompt
 
-If run from a slice branch with no open questions, the action:
+If run from a slice branch with no implementation findings that need Coordinator handling, the action:
 
 - marks the current slice completed in `sdd/index.json`
 - commits current changes as `Impl <milestoneNumber>-<sliceNumber>-<sliceName>`
@@ -230,7 +232,7 @@ Executor Mode must not switch branches, commit, merge, or push. The actions own 
 
 ### Answer Questions
 
-Runs from a slice branch after the user has discussed open questions with the Coordinator.
+Runs from a slice branch after the user has discussed implementation findings with the Coordinator and those findings produced doc or decision updates that should be committed before the slice branch is merged.
 
 The action:
 

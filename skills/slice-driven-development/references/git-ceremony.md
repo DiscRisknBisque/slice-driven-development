@@ -80,7 +80,7 @@ git commit -m "Plan <milestone>"
 
 ### Start Slice
 
-Expected branch: clean milestone branch.
+Expected branch: clean milestone branch after the slice's open questions are answered or deliberately deferred.
 
 Action command pattern:
 
@@ -94,7 +94,7 @@ git switch -c <slice-branch>
 
 Expected branch: slice branch.
 
-When `Start Slice` runs from a slice branch with no open questions, it marks the current slice completed, commits current changes, and merges the slice into the milestone branch. If another planned slice exists, it marks that next slice active before creating the next branch.
+When `Start Slice` runs from a slice branch with no implementation findings that need Coordinator handling, it marks the current slice completed, commits current changes, and merges the slice into the milestone branch. If another planned and already-ready slice exists, it marks that next slice active before creating the next branch.
 
 ```sh
 git add -A
@@ -107,7 +107,7 @@ git commit -m "Start <milestoneNumber>-<nextSliceNumber>-<nextSliceName>"
 
 ### Commit Answered Questions
 
-Expected branch: slice branch after Coordinator question handling.
+Expected branch: slice branch after Coordinator handling of implementation findings that produced doc or decision updates.
 
 Action command pattern:
 

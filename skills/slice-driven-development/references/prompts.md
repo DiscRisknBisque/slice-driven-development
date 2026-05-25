@@ -34,7 +34,7 @@ Create or update the milestone docs under `sdd/<milestoneNumber>-<milestoneName>
 
 ## Start Slice
 
-The `Start Slice` action performs the Git transition first, then starts a new Executor thread:
+After the slice's open questions have been answered or deliberately deferred, the `Start Slice` action performs the Git transition first, then starts a new Executor thread:
 
 ```txt
 Use $slice-driven-development in Executor Mode to implement one vertical slice.
@@ -68,12 +68,12 @@ End by reporting:
 - how it was verified
 - artifact disposition notes for provisional verification, examples, fixtures, scripts, and generated outputs
 - screenshots/artifact paths, if any
-- remaining open questions for the Coordinator
+- implementation findings or remaining questions for planning
 ```
 
-## Post-Slice Iteration
+## Question Handling
 
-Use this when the implementation session returns open questions:
+Use this when a slice has open questions before execution, or when the implementation session returns findings that need Coordinator handling:
 
 ```txt
 Here are my thoughts on <slice>'s open questions.
@@ -89,7 +89,7 @@ The Coordinator should then:
 - answer follow-up questions
 - push back where appropriate
 - update architecture, slice, and decision docs
-- draft the next slice if ready
+- draft or refine the slice that will execute next if ready
 
 ## Review Milestone
 

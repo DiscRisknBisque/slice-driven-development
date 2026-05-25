@@ -1,6 +1,6 @@
 ---
 name: slice-driven-development
-description: Use when the user wants to plan, implement, or steer a project through verifiable vertical slices; create or update roadmap, architecture, slice, and decision docs; process post-slice questions; draft the next slice; review a milestone; condense verification/examples after a milestone; or preserve architecture memory across separate implementation sessions.
+description: Use when the user wants to plan, implement, or steer a project through verifiable vertical slices; create or update roadmap, architecture, slice, and decision docs; answer slice-readiness questions; process implementation findings; draft the next slice; review a milestone; condense verification/examples after a milestone; or preserve architecture memory across separate implementation sessions.
 ---
 
 # Slice-Driven Development
@@ -10,7 +10,7 @@ Use this skill when work should proceed through small, reviewable vertical slice
 The loop is:
 
 ```txt
-plan -> slice brief -> implementation -> post-slice questions -> decisions -> next slice -> milestone review -> condensation
+plan -> slice brief -> answer open questions -> implementation -> findings -> decisions -> next slice -> milestone review -> condensation
 ```
 
 ## Core Rules
@@ -18,10 +18,10 @@ plan -> slice brief -> implementation -> post-slice questions -> decisions -> ne
 - Prefer vertical slices that prove end-to-end behavior.
 - Keep only the current and next slice implementation-detailed. Future slices should contain only Goal, Scope, Non-Goals, and Open Questions. Do not add Implementation Tasks, Architecture Touchpoints, or detailed Verification criteria to a slice until it becomes the current or next slice.
 - Do not build ahead unless the current slice cannot work without a small prerequisite.
-- Treat post-implementation questions as design data.
+- Treat open questions as slice-readiness gates, and treat implementation findings as design data.
 - Capture user answers as durable docs, not only chat history.
 - Push back when an answer creates brittleness, premature abstraction, or excessive scope.
-- Preserve open questions until implementation provides enough evidence.
+- Preserve open questions until there is enough evidence to answer or explicitly defer them.
 - Number milestones when the user has not already specified a milestone numbering scheme.
 - Keep milestone and slice structure in the SDD docs and workflow. Product code should follow the best architecture for that product, not mirror milestone or slice boundaries.
 - Treat slice-created verification code, examples, fixtures, generated artifacts, and package scripts as provisional until explicitly promoted.
@@ -40,7 +40,7 @@ At the start of every session using this skill, identify the active mode as eith
 
 If the user has not specified a mode:
 
-- Use Coordinator Mode for planning, milestone design, post-slice questions, decisions, and next-slice drafting.
+- Use Coordinator Mode for planning, milestone design, slice-readiness questions, implementation findings, decisions, and next-slice drafting.
 - Use Executor Mode only when the user explicitly asks to implement a slice or modify code.
 
 State the selected mode before taking action. Do not mix Coordinator and Executor responsibilities in the same response unless the user explicitly requests a mode switch.
@@ -52,7 +52,7 @@ Use in a long-running planning or architecture session.
 Responsibilities:
 
 - maintain roadmap, architecture, slice, and decision docs
-- process implementation findings and post-slice questions
+- process slice-readiness questions and implementation findings
 - answer follow-up questions and push back where needed
 - record accepted decisions and guardrails
 - mark resolved questions in slice files
@@ -87,7 +87,7 @@ Responsibilities:
 - update docs only when implementation changes the plan
 - label slice-created verification, fixtures, examples, scripts, and generated outputs as provisional unless they are promoted to durable coverage
 - do not switch branches, commit, merge, or push; SDD action scripts handle those transitions
-- end with changed files, run instructions, verification evidence, artifact disposition notes, and remaining open questions
+- end with changed files, run instructions, verification evidence, artifact disposition notes, and implementation findings or remaining questions for planning
 
 Executor Mode should produce information the Coordinator Mode session can process.
 
@@ -142,18 +142,20 @@ The shortest version:
 
 1. Plan a numbered milestone.
 2. Prepare one detailed current slice and lighter future slices.
-3. Implement one slice in Executor Mode.
-4. Review and answer open questions in Coordinator Mode.
-5. Update docs and decisions.
+3. Answer or explicitly defer the current slice's open questions in Coordinator Mode.
+4. Implement one slice in Executor Mode.
+5. Process implementation findings and update docs and decisions.
 6. Repeat until the milestone is complete.
 7. Review the milestone, then condense provisional verification and examples before merge.
+
+Each slice should start only after its open questions have been handled well enough for execution.
 
 Each slice should end with:
 
 - a working demo or reviewable artifact
 - verification evidence
 - artifact disposition notes
-- open questions
+- implementation findings or questions for later planning
 - a decision checkpoint before the next slice
 
 ## Action-Driven Git
@@ -166,14 +168,14 @@ Available project actions after installation:
 - `Ingest SDD Plan`: reads `sdd/roadmap.md`, milestone directories, and slice files into `sdd/index.json`.
 - `Plan Milestone`: starts a Coordinator thread and auto-fills `sdd/project-description.md`, `sdd/roadmap.md`, and the next milestone number and name.
 - `Start Milestone`: creates or switches to the accepted milestone branch, adds planning docs, and commits `Plan <milestone>`.
-- `Start Slice`: marks the slice active in `sdd/index.json`, creates the first slice branch or commits and merges the previous slice, then starts the next Executor thread.
-- `Answer Questions`: marks the slice completed, commits post-slice answers with `Ansr <milestoneNumber>-<sliceNumber>-<sliceName>`, and merges the slice branch.
+- `Start Slice`: after the current slice's open questions are answered or deferred, marks the slice active in `sdd/index.json`, creates the first slice branch or commits and merges the previous slice, then starts the next Executor thread.
+- `Answer Questions`: marks the slice completed, commits answer-driven doc or decision updates with `Ansr <milestoneNumber>-<sliceNumber>-<sliceName>`, and merges the slice branch.
 - `Review Milestone`: sends the review prompt to the Coordinator thread, leaving `<whatChanged>` for the user to fill in.
 - `Close Milestone`: marks the milestone closed in `sdd/index.json`, commits reviewed milestone cleanup, and merges the milestone branch into trunk.
 
 For setup and detailed branch behavior, read `references/actions.md` and `references/git-ceremony.md`.
 
-## Post-Slice Question Handling
+## Open Question Handling
 
 When the user answers open questions:
 
@@ -184,7 +186,7 @@ When the user answers open questions:
 - If a question is answered indirectly by another answer or implementation finding, state that explicitly to the user and document which answer or finding resolved it.
 - Update affected docs.
 - Add a decision record when the answer changes architecture, workflow, contracts, or policy.
-- Draft the next slice if the answers create enough clarity.
+- Draft or refine the slice to be executed next if the answers create enough clarity.
 - Do not rewrite history unless the decision truly supersedes earlier docs.
 
 ## Milestone Review and Condensation
@@ -211,4 +213,4 @@ Load these only when needed:
 - `references/git-ceremony.md`: branch topology and the Git operations performed by action scripts.
 - `references/slice-template.md`: slice file template.
 - `references/decision-template.md`: decision record template.
-- `references/prompts.md`: prompts for implementation and post-slice sessions.
+- `references/prompts.md`: prompts for implementation and question-handling sessions.

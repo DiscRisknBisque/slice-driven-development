@@ -20,7 +20,7 @@ Stages:
   plan-milestone     Verify milestone planning commit readiness
   start-slice        Verify clean milestone branch before creating a slice branch
   finish-slice       Verify slice branch implementation commit readiness
-  post-slice-docs    Verify slice branch post-slice docs commit readiness
+  post-slice-docs    Verify slice branch answer-driven docs commit readiness
   merge-slice        Verify clean milestone branch before merging a slice branch
   review-milestone   Verify milestone branch before review/condensation
   merge-milestone    Verify clean trunk branch before merging a milestone branch

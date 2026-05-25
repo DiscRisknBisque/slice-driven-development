@@ -1,6 +1,6 @@
 # Slice-Driven Development Workflow
 
-This reference is the full lifecycle contract for Slice-Driven Development. Use it when planning a milestone, preparing an implementation prompt, processing post-slice findings, reviewing a milestone, or deciding whether artifacts should be condensed. Git transitions are handled by SDD actions, not by Coordinator or Executor chat prompts.
+This reference is the full lifecycle contract for Slice-Driven Development. Use it when planning a milestone, answering slice-readiness questions, preparing an implementation prompt, processing implementation findings, reviewing a milestone, or deciding whether artifacts should be condensed. Git transitions are handled by SDD actions, not by Coordinator or Executor chat prompts.
 
 ## Roles
 
@@ -11,7 +11,7 @@ Coordinator Mode owns planning memory and workflow gates.
 It may:
 
 - create and maintain roadmap, architecture, slice, and decision docs
-- classify and process post-slice questions
+- classify and process slice-readiness questions and implementation findings
 - record accepted decisions and guardrails
 - draft the next slice when enough signal exists
 - compare milestone implementation against milestone docs
@@ -35,7 +35,7 @@ It may:
 - update docs only when implementation changes the plan
 - avoid branch switches, commits, merges, and pushes; actions perform those mechanics
 
-It must end with changed files, run instructions, verification evidence, artifact disposition notes, and remaining open questions.
+It must end with changed files, run instructions, verification evidence, artifact disposition notes, and implementation findings or remaining questions for planning.
 
 ## Pipeline
 
@@ -72,7 +72,17 @@ Exit criteria:
 - relevant risks and open questions are recorded
 - planning docs are ready for the `Start Milestone` action
 
-### 2. Prepare One Slice
+### 2. Answer Open Questions For One Slice
+
+Before implementation, the Coordinator should account for the current slice's open questions. Questions can be answered directly, answered indirectly by existing decisions or evidence, kept open only when they do not block execution, or superseded by a changed plan.
+
+Exit criteria:
+
+- every execution-blocking question is answered or explicitly deferred
+- accepted answers are reflected in slice, architecture, or decision docs
+- the slice scope and verification expectations are clear enough for Executor Mode
+
+### 3. Prepare One Slice
 
 Before implementation, the Coordinator should produce or confirm an Executor prompt that names:
 
@@ -89,7 +99,7 @@ Exit criteria:
 - verification is observable
 - slice work starts after the `Start Slice` action marks the slice active in `sdd/index.json` and creates the slice branch
 
-### 3. Implement One Slice
+### 4. Implement One Slice
 
 The Executor implements only the current slice and verifies it.
 
@@ -100,12 +110,12 @@ Exit criteria:
 - working demo or reviewable artifact exists
 - verification evidence is reported
 - artifact disposition notes identify provisional and durable artifacts
-- open questions are reported
+- implementation findings or planning questions are reported
 - implementation changes are ready for the next action
 
-### 4. Review and Answer Open Questions
+### 5. Process Implementation Findings
 
-The user reviews the implementation and answers remaining questions. The Coordinator classifies each open question as:
+The user reviews the implementation and any findings that affect the current or next slice. The Coordinator classifies each question or finding as:
 
 - `answered directly`
 - `answered indirectly`
@@ -114,18 +124,18 @@ The user reviews the implementation and answers remaining questions. The Coordin
 
 Exit criteria:
 
-- every open question is accounted for
+- every reported question or finding is accounted for
 - accepted decisions are recorded
 - architecture docs reflect durable changes
 - the next slice is drafted or the current slice is refined
 
-### 5. Commit and Merge the Slice
+### 6. Commit and Merge the Slice
 
 Use the SDD actions for deterministic Git transitions.
 
-If there were no open questions, run `Start Slice` from the current slice branch. It marks the current slice completed, commits the implementation, merges it into the milestone branch, creates the next slice branch when one exists, and starts the next Executor thread.
+If there were no implementation findings that need Coordinator handling and the next slice is already ready to execute, run `Start Slice` from the current slice branch. It marks the current slice completed, commits the implementation, merges it into the milestone branch, creates the next slice branch when one exists, and starts the next Executor thread.
 
-If there were open questions, discuss them with the Coordinator first, then run `Answer Questions` from the slice branch. It marks the current slice completed, commits the answer-driven docs, and merges the slice branch into the milestone branch.
+If implementation findings produced doc or decision updates, discuss them with the Coordinator first, then run `Answer Questions` from the slice branch. It marks the current slice completed, commits the answer-driven docs, and merges the slice branch into the milestone branch. Prepare the next slice's open questions from the milestone branch before running `Start Slice` again.
 
 Recommended commit messages:
 
@@ -138,9 +148,9 @@ Exit criteria:
 
 - implementation or answer changes are committed by the action
 - slice branch is merged into the milestone branch by the action
-- next slice starts only after the action reaches a clean branch state
+- next slice starts only after its open questions are answered or deferred and the action reaches a clean branch state
 
-### 6. Review and Condense the Milestone
+### 7. Review and Condense the Milestone
 
 When all slices are complete, compare the final codebase to the milestone docs and the user's stated understanding of the milestone outcome.
 
