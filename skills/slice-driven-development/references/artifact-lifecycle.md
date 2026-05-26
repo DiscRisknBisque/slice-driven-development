@@ -1,6 +1,6 @@
 # Artifact Lifecycle
 
-Use this reference when a slice creates verification files, examples, fixtures, generated outputs, scripts, or package commands, and whenever a milestone is ready to merge.
+Use this reference when a slice creates verification files, examples, fixtures, generated outputs, scripts, or review artifacts, and whenever a milestone is ready for review.
 
 ## Principle
 
@@ -17,7 +17,6 @@ Provisional artifacts include:
 - copied fixtures or scenes
 - mock responses and request files
 - generated verification output
-- package scripts named after slice numbers
 - temporary working directories
 
 Durable artifacts include:
@@ -25,7 +24,7 @@ Durable artifacts include:
 - regression tests or evaluations that protect current behavior
 - canonical examples that explain current supported usage
 - fixtures used by durable tests
-- behavior-level package scripts
+- behavior-level task entries
 - docs that record decisions, architecture, and slice history
 
 ## End-of-Slice Reporting
@@ -40,7 +39,7 @@ Artifact disposition:
 - Open: <artifacts needing Coordinator/user decision>
 ```
 
-## Milestone Condensation
+## Milestone Review
 
 At milestone review, inventory:
 
@@ -48,47 +47,27 @@ At milestone review, inventory:
 - examples and demos
 - fixtures, mock responses, and request files
 - generated outputs and temporary working directories
-- `package.json` scripts or equivalent task runner entries
+- task entries that expose verification or demos
 
 Classify each artifact:
 
-- `promote`: keep as durable regression/evaluation coverage
+- `promote`: keep as durable regression or evaluation coverage
 - `canonical example`: keep as the clearest example of current supported behavior
-- `merge`: fold duplicated slice-specific checks into a broader durable command
+- `merge`: fold duplicated slice-specific checks into a broader durable check
 - `archive in docs`: preserve the rationale or result in docs, but remove executable clutter
 - `delete`: remove scratch, superseded, generated, or confusing artifacts
+- `leave provisional`: keep temporarily with an explicit follow-up
 
-## Package Script Guidance
+## Completion Guidance
 
-Prefer durable behavior-level commands after milestone condensation:
+Before marking the milestone complete, report:
 
-```txt
-verify:presentation
-verify:runtime-answer-loop
-verify:presenter-agent
-test:evaluations
-demo:presentation
-```
-
-Treat slice-numbered commands as suspicious after the milestone closes:
-
-```txt
-presentation:slice05
-answer:slice01
-presenter:slice03:live
-```
-
-Slice-numbered commands may remain only when they are intentionally historical, clearly documented, and not part of the standard verification surface.
-
-## Condensation Report
-
-Before merge, report:
-
-- durable verification commands that now define the milestone end-state
+- durable verification checks that now define the milestone end-state
 - canonical examples kept
-- artifacts merged or removed
-- package scripts renamed, removed, or retained
-- verification evidence from the condensed commands
+- artifacts combined, documented, removed, or carried forward
+- verification evidence from the durable checks
 - any remaining cleanup risks
+
+For external workflow tooling, artifact disposition can become a checkpoint. The skill itself only recommends disposition unless the user explicitly enters Executor Mode for cleanup.
 
 Do not delete decision records or slice files as part of condensation. If a decision is superseded, add or update a decision record instead of rewriting history.

@@ -1,114 +1,83 @@
-# Session Prompts
+# Universal Prompts
 
-These prompts are the source text used by SDD actions. The action runner fills values from the repository and `sdd/index.json` before starting a Codex thread or turn.
+These examples are copyable starting points for any agentic coding harness that can read files, edit files, ask questions, and follow a skill prompt.
 
-## Auto-Filled Inputs
-
-- `projectDescription`: read from `sdd/project-description.md`
-- `roadmap`: read from `sdd/roadmap.md`
-- `milestoneNumber`: read from `sdd/index.json`, falling back to existing `sdd/<NN>-.../` milestone directories
-- `milestoneName`: read from `sdd/index.json` or proposed during Coordinator discussion
-- `milestone`: inferred from the current milestone branch, `sdd/index.json`, or existing `sdd/<NN>-.../` directory
-- `sliceNumber` and `sliceName`: read from `sdd/index.json`, falling back to `sdd/<milestone>/slices/<NN>-...md`
-- `relevantDecisions`: inferred from `sdd/<milestone>/decisions/*.md`
-
-## Plan Milestone
-
-The `Plan Milestone` action starts a new Coordinator thread:
+## Start Coordinator Mode
 
 ```txt
-Use $slice-driven-development in Coordinator Mode.
-
-Let's think through the implementation of milestone `<milestoneNumber>-<milestoneName>`.
-
-Project description is loaded from `sdd/project-description.md`:
-
-<projectDescription>
-
-Roadmap is loaded from `sdd/roadmap.md`:
-
-<roadmap>
-
-Create or update the milestone docs under `sdd/<milestoneNumber>-<milestoneName>/`, draft the current slice in detail, keep future slices light, and include a Relevant Decisions section in each detailed slice.
+Activate the slice-driven-development skill.
+Use Slice-Driven Development in Coordinator Mode.
+Read the current SDD docs under sdd/ if they exist, initialize or resume workflow state, and stop at the required menu.
 ```
 
-## Start Slice
-
-After the slice's open questions have been answered or deliberately deferred, the `Start Slice` action performs the Git transition first, then starts a new Executor thread:
+## Resume Existing Workflow
 
 ```txt
-Use $slice-driven-development in Executor Mode to implement one vertical slice.
-
-We are building this project in verifiable vertical slices.
-
-Current branch: `<sliceBranch>`
-Milestone: `<milestone>`
-Slice: `<sliceNumber>-<sliceName>`
-
-Start by reading:
-- sdd/<milestone>/README.md
-- sdd/<milestone>/architecture.md
-- sdd/<milestone>/slices/<sliceFile>
-
-Relevant decisions:
-<relevantDecisions>
-
-Then implement only the slice described in `sdd/<milestone>/slices/<sliceFile>`.
-
-Rules:
-- Do not build ahead into later slices unless the current slice cannot work without a small prerequisite.
-- Prefer the architecture and decisions already documented.
-- If implementation teaches us something that changes the plan, update the relevant slice file or add a short note in the SDD docs.
-- Keep the result runnable and reviewable.
-- Do not switch branches, commit, merge, or push. SDD action scripts handle Git deterministically.
-
-End by reporting:
-- what changed
-- how to run it
-- how it was verified
-- artifact disposition notes for provisional verification, examples, fixtures, scripts, and generated outputs
-- screenshots/artifact paths, if any
-- implementation findings or remaining questions for planning
+Activate the slice-driven-development skill.
+Resume the existing Slice-Driven Development workflow.
+Use milestone README frontmatter as workflow memory, summarize the current state, and show the continuation menu.
 ```
 
-## Question Handling
-
-Use this when a slice has open questions before execution, or when the implementation session returns findings that need Coordinator handling:
+## Plan A Milestone
 
 ```txt
-Here are my thoughts on <slice>'s open questions.
+Activate the slice-driven-development skill.
+Use Coordinator Mode to plan this milestone:
+<milestone goal>
 
-Answer any follow-up questions I added. Push back on my answers if you disagree.
-
-- <question>
-  - <answer>
+Use project context from sdd/project-description.md and sdd/roadmap.md when available.
+Create or update milestone docs under sdd/<NN>-<name>/.
+Make the current slice implementation-ready, the next slice moderately detailed, and future slices lightweight.
+Show the milestone planning menu and stop.
 ```
 
-The Coordinator should then:
-
-- answer follow-up questions
-- push back where appropriate
-- update architecture, slice, and decision docs
-- draft or refine the slice that will execute next if ready
-
-## Review Milestone
-
-The `Review Milestone` action sends this to the Coordinator thread. It fills everything except `<whatChanged>` so the user still supplies their own understanding.
+## Prepare Current Slice
 
 ```txt
-Use $slice-driven-development in Coordinator Mode to review and condense this milestone.
+Activate the slice-driven-development skill.
+Use Coordinator Mode to prepare the current slice.
+Read the milestone README, architecture doc, current slice, relevant decisions, and pending questions.
+Classify every blocking question before marking the slice ready.
+Show the slice readiness menu and stop.
+```
 
-The <numberOfSlices> slices for Milestone <milestoneNumber> have been implemented.
+## Enter Executor Mode
 
-Read:
-- sdd/<milestone>/README.md
-- sdd/<milestone>/architecture.md
-- sdd/<milestone>/slices/
-- sdd/<milestone>/decisions/
+```txt
+Activate the slice-driven-development skill if available.
+Use Executor Mode.
+Read the milestone README, architecture doc, current slice, and relevant decision records.
+Implement only the current slice.
+Do not build future slices.
+Do not perform version-control operations.
+Verify the result using project-appropriate checks.
+End with the standard Executor report.
+```
 
-Compare the codebase to the milestone docs and tell me whether my understanding is correct:
+## Process An Executor Report
 
-<whatChanged>
+```txt
+Activate the slice-driven-development skill.
+Use Coordinator Mode to process this Executor report:
+<report>
 
-Then inventory provisional verification code, examples, fixtures, generated outputs, and package scripts. Recommend what to promote, merge, archive in docs, or delete so the repo keeps only the durable verification and canonical examples needed for this milestone's current end-state.
+Classify findings and questions, update durable docs and decisions, decide the current slice status, then show the post-slice processing menu and stop.
+```
+
+## Answer Open Questions
+
+```txt
+Activate the slice-driven-development skill.
+Use Coordinator Mode to process these open-question answers:
+<questions and answers>
+
+Classify each answer, challenge brittle or scope-expanding assumptions, update docs and decisions, then return to the active checkpoint menu.
+```
+
+## Review A Milestone
+
+```txt
+Activate the slice-driven-development skill.
+Use Coordinator Mode to review the current milestone.
+Ask me for my understanding of what changed, compare it with the milestone docs and inspectable behavior, recommend artifact disposition, and show the milestone review menu.
 ```
