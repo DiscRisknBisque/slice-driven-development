@@ -1,6 +1,6 @@
-# Slice-Driven Development
+# Slicewise
 
-Slice-Driven Development (SDD) is a universal Agent Skill for steering coding work through small, reviewable vertical slices.
+Slicewise is a universal Agent Skill for steering coding work through small, reviewable vertical slices.
 
 It is designed for any agentic coding harness that can read files, edit files, ask the user questions, and follow a skill prompt. The skill does not depend on a particular vendor, local app, automation service, or repository workflow.
 
@@ -33,7 +33,7 @@ The user remains the reviewer and decision-maker. SDD can recommend, challenge, 
 SDD is built on the open Agent Skills standard. Works with Claude Code, Cursor, Windsurf, Cline, GitHub Copilot, and any AI agent that supports the standard.
 
 ```bash
-npx skills add discrisknbisque/slice-driven-development
+npx skills add discrisknbisque/slicewise
 ```
 
 ## Before You Start: Product Docs
@@ -156,7 +156,7 @@ You do not need to understand the whole workflow before using SDD. Treat it like
 Give the agent the feature, fix, or exploration in normal language. It is fine if the idea is rough.
 
 ```txt
-Activate the slice-driven-development skill.
+Activate the slicewise skill.
 Use Slice-Driven Development in Coordinator Mode.
 
 I want users to be able to save profile settings. Keep it lightweight.
@@ -326,7 +326,7 @@ When unsure, ask the agent to explain the current menu in plain English before c
 The skill is organized as a micro-file workflow:
 
 ```txt
-skills/slice-driven-development/
+skills/slicewise/
   SKILL.md
   steps/
     step-01-init.md
@@ -376,7 +376,7 @@ Example fields include:
 - `pendingQuestions`
 - `implementationReports`
 
-The full schema lives in `skills/slice-driven-development/references/state-schema.md`.
+The full schema lives in `skills/slicewise/references/state-schema.md`.
 
 ## SDD Docs Layout
 
