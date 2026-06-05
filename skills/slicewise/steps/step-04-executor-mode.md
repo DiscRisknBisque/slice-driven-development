@@ -12,7 +12,7 @@ Implement exactly one current slice and end with the standard Executor report.
 - Implement only the current slice.
 - Do not build future slices.
 - Do not expand scope to create abstractions not required by the current slice.
-- Use product-appropriate architecture; product code must not mirror SDD document names unless that is naturally correct.
+- Use product-appropriate architecture; product code must not mirror Slicewise document names unless that is naturally correct.
 - Update planning docs only if implementation findings materially change the plan.
 - Run project-appropriate verification.
 - Update durable state before routing.
@@ -44,7 +44,7 @@ Do not inspect or modify files solely for future slices.
 - Modify product files needed for the current slice.
 - Add or update verification that proves the current slice.
 - Create provisional examples or generated artifacts only when needed to review the slice.
-- Update SDD docs only for material implementation findings.
+- Update Slicewise docs only for material implementation findings.
 - Run project-appropriate checks.
 - Produce the Executor report.
 

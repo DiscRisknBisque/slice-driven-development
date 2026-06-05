@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Mark the SDD milestone complete after user acceptance.
+Mark the Slicewise milestone complete after user acceptance.
 
 ## Mandatory Execution Rules
 

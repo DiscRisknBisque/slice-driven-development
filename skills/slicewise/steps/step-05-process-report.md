@@ -40,7 +40,7 @@ Inspect product behavior only when needed to understand the report or user feedb
 
 - Classify questions and findings.
 - Challenge risky answers, brittle assumptions, premature abstractions, and scope expansion.
-- Update SDD docs and decisions.
+- Update Slicewise docs and decisions.
 - Preserve unresolved questions.
 - Decide the current slice status.
 - Draft follow-up recommendations.

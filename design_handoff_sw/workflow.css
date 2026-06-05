@@ -1,0 +1,685 @@
+/* ─────────────────────────────────────────────────────────────
+   Slicewise — workflow screen styles (init + planning gates)
+   Builds on empty-states.css / the shared design system.
+   ───────────────────────────────────────────────────────────── */
+
+/* Full workflow sidebar (milestone tree) ─────────────────────── */
+.ms-item,
+.slice-item {
+  display: flex;
+  align-items: center;
+  padding: 5px 8px;
+  border-radius: var(--r-md);
+  cursor: pointer;
+  font-size: 13px;
+  gap: 6px;
+}
+.ms-item:hover,
+.slice-item:hover {
+  background: var(--bg-hover);
+}
+.ms-item .chev {
+  width: 14px;
+  color: var(--text-faint);
+  font-size: 11px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.ms-item .num,
+.slice-item .num {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-faint);
+  width: 18px;
+  flex-shrink: 0;
+}
+.ms-item .name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-weight: 500;
+}
+.ms-item.completed .name {
+  font-weight: 400;
+  color: var(--text-muted);
+}
+.ms-item.active {
+  background: var(--bg-sunken);
+}
+.ms-item.active .name {
+  font-weight: 500;
+  color: var(--text);
+}
+.ms-item .ms-status {
+  font-size: 10px;
+  flex-shrink: 0;
+}
+.ms-item .ms-status.complete {
+  color: var(--success);
+}
+.ms-item .ms-status.draft {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--info);
+  background: var(--info-bg);
+  padding: 1px 5px;
+  border-radius: 7px;
+}
+
+.ms-slices {
+  margin-left: 14px;
+  border-left: 1px solid var(--border);
+  margin-top: 2px;
+  margin-bottom: 4px;
+}
+.slice-item {
+  padding-left: 14px;
+  font-size: 12.5px;
+}
+.slice-item .num {
+  width: 18px;
+}
+.slice-item .dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  border: 1.5px solid var(--border-strong);
+}
+.slice-item .name {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.slice-item.proposed .dot {
+  border-style: dashed;
+}
+.slice-item.proposed .name {
+  color: var(--text-muted);
+}
+.slice-item.proposed .num {
+  color: var(--text-faint);
+}
+
+/* current/active slice — inverted, matches the original mockup */
+.slice-item.active {
+  background: var(--bg-invert);
+  color: var(--text-on-invert);
+  border-radius: 0 var(--r-md) var(--r-md) 0;
+}
+.slice-item.active .num {
+  color: rgba(250, 250, 250, 0.5);
+}
+.slice-item.active .name {
+  color: var(--text-on-invert);
+}
+.slice-item.active .dot {
+  background: var(--text-on-invert);
+  border-color: var(--text-on-invert);
+}
+.slice-item .pill {
+  font-size: 10px;
+  padding: 1px 5px;
+  border-radius: 8px;
+  background: var(--warning-bg);
+  color: var(--warning);
+  font-family: var(--font-mono);
+  font-weight: 500;
+  margin-left: auto;
+}
+.slice-item.active .pill {
+  background: rgba(250, 250, 250, 0.15);
+  color: var(--text-on-invert);
+}
+
+.sb-plan-note {
+  margin: 2px 8px 4px 22px;
+  font-size: 11px;
+  color: var(--text-faint);
+  font-style: italic;
+  line-height: 1.4;
+}
+
+/* Breadcrumb / page head (shared with mockup) ────────────────── */
+.breadcrumb {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-faint);
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.breadcrumb .crumb {
+  color: var(--text-muted);
+}
+.breadcrumb .crumb.current {
+  color: var(--text);
+}
+.breadcrumb .sep {
+  color: var(--text-faint);
+}
+
+.page-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 20px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid var(--border);
+}
+.page-title-block {
+  min-width: 0;
+  flex: 1;
+}
+.page-title {
+  font-size: 22px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+.page-meta {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font-size: 12px;
+}
+.meta-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 8px;
+  border-radius: var(--r-md);
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+}
+.meta-chip i {
+  font-style: normal;
+  font-size: 11px;
+}
+.status-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 500;
+}
+.status-chip .dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--info);
+  box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.1);
+}
+.status-chip {
+  color: var(--info);
+}
+.status-chip.draft .dot {
+  background: var(--info);
+}
+.status-chip.proposed {
+  color: var(--warning);
+}
+.status-chip.proposed .dot {
+  background: var(--warning);
+  box-shadow: 0 0 0 3px rgba(202, 138, 4, 0.1);
+}
+.page-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+/* ─── The bracketed-letter MENU (signature Slicewise element) ───────── */
+.menu {
+  background: var(--bg-pane);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  overflow: hidden;
+}
+.menu-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 11px 16px;
+  border-bottom: 1px solid var(--border-faint);
+}
+.menu-head .mt {
+  font-size: 13px;
+  font-weight: 500;
+}
+.menu-head .ms {
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: var(--text-faint);
+}
+.menu-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 16px;
+  cursor: pointer;
+  border-bottom: 1px solid var(--border-faint);
+  transition: background 100ms ease;
+}
+.menu-item:last-child {
+  border-bottom: none;
+}
+.menu-item:hover {
+  background: var(--bg-hover);
+}
+.menu-key {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--r-md);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  background: var(--bg-subtle);
+}
+.menu-body {
+  flex: 1;
+  min-width: 0;
+}
+.menu-label {
+  font-size: 13px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.menu-label .rec {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--success);
+  background: var(--success-bg);
+  padding: 1px 6px;
+  border-radius: 7px;
+}
+.menu-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+  margin-top: 3px;
+  line-height: 1.45;
+}
+.menu-item .menu-arrow {
+  color: var(--text-faint);
+  font-size: 14px;
+  align-self: center;
+}
+
+.menu-item.primary {
+  background: var(--bg-invert);
+}
+.menu-item.primary:hover {
+  background: #000;
+}
+.menu-item.primary .menu-key {
+  background: rgba(255, 255, 255, 0.12);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: var(--text-on-invert);
+}
+.menu-item.primary .menu-label {
+  color: var(--text-on-invert);
+}
+.menu-item.primary .menu-desc {
+  color: rgba(250, 250, 250, 0.65);
+}
+.menu-item.primary .menu-arrow {
+  color: rgba(250, 250, 250, 0.7);
+}
+.menu-item.danger .menu-key {
+  color: var(--text-faint);
+}
+
+.menu-foot {
+  padding: 9px 16px;
+  background: var(--bg-subtle);
+  border-top: 1px solid var(--border-faint);
+  font-size: 11px;
+  color: var(--text-faint);
+  font-family: var(--font-mono);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ─── Capture blocks (init) ───────────────────────────────────── */
+.capture-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border-faint);
+}
+.capture-block {
+  background: var(--bg-pane);
+  padding: 14px 16px;
+}
+.capture-block.full {
+  grid-column: 1 / -1;
+}
+.capture-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--text-faint);
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.capture-value {
+  font-size: 13px;
+  line-height: 1.6;
+  color: var(--text);
+}
+.capture-value.lead {
+  font-size: 14.5px;
+  line-height: 1.55;
+}
+.tag-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.tag {
+  font-size: 11.5px;
+  padding: 4px 9px;
+  border-radius: 20px;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.tag.neg {
+  color: var(--warning);
+  background: var(--warning-bg);
+  border-color: transparent;
+}
+.bullet-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+.bullet-list li {
+  display: flex;
+  gap: 9px;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--text);
+}
+.bullet-list li::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--text-faint);
+  margin-top: 7px;
+  flex-shrink: 0;
+}
+.bullet-list.neg li::before {
+  background: var(--warning);
+  border-radius: 1px;
+}
+
+/* User prompt block (dark, terminal-ish) ─────────────────────── */
+.prompt-block {
+  background: var(--bg-invert);
+  border-radius: var(--r-md);
+  overflow: hidden;
+}
+.prompt-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: rgba(250, 250, 250, 0.5);
+}
+.prompt-head .live-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--success);
+}
+.prompt-body {
+  padding: 12px 14px;
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  line-height: 1.65;
+  color: rgba(250, 250, 250, 0.92);
+  white-space: pre-wrap;
+}
+.prompt-body .cmd {
+  color: #fbbf77;
+}
+.prompt-body .dim {
+  color: rgba(250, 250, 250, 0.45);
+}
+
+/* Coordinator restatement (B variant) ────────────────────────── */
+.coord-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+}
+.coord-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 2px 8px;
+  border-radius: 20px;
+  background: var(--bg-invert);
+  color: var(--text-on-invert);
+  font-size: 10px;
+}
+.coord-badge .live-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: #4ade80;
+}
+.restate {
+  font-size: 14.5px;
+  line-height: 1.6;
+  color: var(--text);
+  margin-bottom: 4px;
+  text-wrap: pretty;
+}
+.restate b {
+  font-weight: 500;
+}
+
+/* ─── Plan / proposed slices (step 2) ─────────────────────────── */
+.plan-slice {
+  display: grid;
+  grid-template-columns: 22px 1fr;
+  gap: 14px;
+  padding: 16px;
+  border-bottom: 1px solid var(--border-faint);
+  position: relative;
+}
+.plan-slice:last-child {
+  border-bottom: none;
+}
+.plan-rail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+.plan-node {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  border: 1.5px solid var(--border-strong);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--text-faint);
+  background: var(--bg-pane);
+  z-index: 1;
+}
+.plan-slice.detailed .plan-node {
+  border-color: var(--text);
+  color: var(--text);
+  border-style: solid;
+}
+.plan-line {
+  width: 1.5px;
+  flex: 1;
+  background: var(--border);
+  margin: 2px 0;
+}
+.plan-slice:last-child .plan-line {
+  display: none;
+}
+
+.plan-main {
+  min-width: 0;
+}
+.plan-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+.plan-num {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-faint);
+}
+.plan-name {
+  font-size: 14px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+.detail-chip {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  padding: 2px 7px;
+  border-radius: 7px;
+}
+.detail-chip.full {
+  color: var(--success);
+  background: var(--success-bg);
+}
+.detail-chip.sketch {
+  color: var(--info);
+  background: var(--info-bg);
+}
+.detail-chip.outline {
+  color: var(--text-faint);
+  background: var(--bg-sunken);
+}
+
+.plan-goal {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  line-height: 1.55;
+  margin-bottom: 12px;
+  text-wrap: pretty;
+}
+.plan-slice.outline .plan-main {
+  padding: 1px 0;
+}
+.plan-slice.outline .plan-goal {
+  margin-bottom: 0;
+}
+
+.plan-fields {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 20px;
+}
+.plan-field .pf-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-faint);
+  margin-bottom: 4px;
+}
+.plan-field .pf-val {
+  font-size: 12px;
+  color: var(--text);
+  line-height: 1.5;
+}
+.plan-field .pf-val.mono {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+}
+
+.plan-tasks {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 2px;
+}
+.plan-tasks li {
+  display: flex;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--text);
+  line-height: 1.45;
+}
+.plan-tasks li .tk {
+  width: 13px;
+  height: 13px;
+  border: 1.5px solid var(--border-strong);
+  border-radius: 3px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+/* compact summary footer for plan */
+.plan-summary {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 11px;
+  font-family: var(--font-mono);
+  color: var(--text-muted);
+}
+.plan-summary .ps {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.plan-summary .ps b {
+  color: var(--text);
+  font-weight: 500;
+}

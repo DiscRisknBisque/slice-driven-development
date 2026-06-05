@@ -13,7 +13,7 @@
         },
         {
           "id": "uses-readme-frontmatter",
-          "description": "Creates or uses milestone README frontmatter with sddWorkflow, lastStep, stepsCompleted, currentSlice, and nextSlice."
+          "description": "Creates or uses milestone README frontmatter with swWorkflow, lastStep, stepsCompleted, currentSlice, and nextSlice."
         },
         {
           "id": "presents-menu",
@@ -34,15 +34,15 @@
       "name": "existing-workflow-continuation",
       "prompt": "Activate the slice-driven-development skill and resume the existing workflow in this project.",
       "files": [
-        "scaffold/sdd/01-markdown-blog/README.md",
-        "scaffold/sdd/01-markdown-blog/architecture.md",
-        "scaffold/sdd/01-markdown-blog/slices/00-parse-frontmatter.md"
+        "scaffold/sw/01-markdown-blog/README.md",
+        "scaffold/sw/01-markdown-blog/architecture.md",
+        "scaffold/sw/01-markdown-blog/slices/00-parse-frontmatter.md"
       ],
-      "expected_output": "Continuation detects sddWorkflow: true, summarizes state, presents the resume menu, and routes based on recorded workflow state only after user approval.",
+      "expected_output": "Continuation detects swWorkflow: true, summarizes state, presents the resume menu, and routes based on recorded workflow state only after user approval.",
       "assertions": [
         {
           "id": "detects-workflow-frontmatter",
-          "description": "Finds milestone README frontmatter with sddWorkflow: true."
+          "description": "Finds milestone README frontmatter with swWorkflow: true."
         },
         {
           "id": "summarizes-current-state",
@@ -61,11 +61,11 @@
     {
       "id": 3,
       "name": "slice-readiness",
-      "prompt": "Use Slice-Driven Development in Coordinator Mode. Prepare the current slice. Answers: malformed input should crash loudly; also add TOML frontmatter because another tool has it.",
+      "prompt": "Use Slicewise in Coordinator Mode. Prepare the current slice. Answers: malformed input should crash loudly; also add TOML frontmatter because another tool has it.",
       "files": [
-        "scaffold/sdd/01-markdown-blog/README.md",
-        "scaffold/sdd/01-markdown-blog/architecture.md",
-        "scaffold/sdd/01-markdown-blog/slices/00-parse-frontmatter.md"
+        "scaffold/sw/01-markdown-blog/README.md",
+        "scaffold/sw/01-markdown-blog/architecture.md",
+        "scaffold/sw/01-markdown-blog/slices/00-parse-frontmatter.md"
       ],
       "expected_output": "The readiness step classifies questions, challenges risky or scope-expanding answers, updates decisions when needed, and returns to the same menu.",
       "assertions": [
@@ -96,10 +96,10 @@
       "name": "executor-mode",
       "prompt": "Activate the slice-driven-development skill if available. Use Executor Mode. Read the milestone docs and implement only Slice 01, the template system.",
       "files": [
-        "scaffold/sdd/01-markdown-blog/README.md",
-        "scaffold/sdd/01-markdown-blog/architecture.md",
-        "scaffold/sdd/01-markdown-blog/slices/01-template-system.md",
-        "scaffold/sdd/01-markdown-blog/decisions/00-frontmatter-defaults.md",
+        "scaffold/sw/01-markdown-blog/README.md",
+        "scaffold/sw/01-markdown-blog/architecture.md",
+        "scaffold/sw/01-markdown-blog/slices/01-template-system.md",
+        "scaffold/sw/01-markdown-blog/decisions/00-frontmatter-defaults.md",
         "scaffold/src/parser.js",
         "scaffold/package.json"
       ],
@@ -132,9 +132,9 @@
       "name": "post-slice-report-processing",
       "prompt": "Use Coordinator Mode to process this Executor report: Slice 00 is implemented, malformed input now returns a structured error, verification passed, but the parser found that title-derived slugs need a documented normalization rule.",
       "files": [
-        "scaffold/sdd/01-markdown-blog/README.md",
-        "scaffold/sdd/01-markdown-blog/architecture.md",
-        "scaffold/sdd/01-markdown-blog/slices/00-parse-frontmatter.md"
+        "scaffold/sw/01-markdown-blog/README.md",
+        "scaffold/sw/01-markdown-blog/architecture.md",
+        "scaffold/sw/01-markdown-blog/slices/00-parse-frontmatter.md"
       ],
       "expected_output": "Coordinator Mode classifies findings and questions, updates docs and decisions, decides slice status, prepares next-slice work, and returns to the menu.",
       "assertions": [
@@ -203,7 +203,7 @@
     {
       "id": 8,
       "name": "version-control-boundary",
-      "prompt": "Use Slice-Driven Development in Executor Mode for the current slice.",
+      "prompt": "Use Slicewise in Executor Mode for the current slice.",
       "expected_output": "The skill makes the version-control boundary explicit and does not instruct agents to perform repository transitions.",
       "assertions": [
         {

@@ -2,7 +2,7 @@
 
 ```md
 ---
-sddWorkflow: true
+swWorkflow: true
 workflowType: slice-driven-development
 status: in_progress
 mode: coordinator

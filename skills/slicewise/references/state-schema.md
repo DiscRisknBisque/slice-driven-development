@@ -1,20 +1,20 @@
 # Workflow State Schema
 
-The milestone README frontmatter is the durable workflow memory for Slice-Driven Development.
+The milestone README frontmatter is the durable workflow memory for Slicewise.
 
 Primary location:
 
 ```txt
-sdd/<NN>-<milestone-name>/README.md
+sw/<NN>-<milestone-name>/README.md
 ```
 
-`sdd/index.json` is not required for skill operation. If it exists, the initialization and continuation steps may read it as migration context only. A project may keep it as optional derived state for external tools, but it is not the skill-owned source of truth.
+`sw/index.json` is not required for skill operation. If it exists, the initialization and continuation steps may read it as migration context only. A project may keep it as optional derived state for external tools, but it is not the skill-owned source of truth.
 
 ## Example
 
 ```yaml
 ---
-sddWorkflow: true
+swWorkflow: true
 workflowType: slice-driven-development
 status: in_progress
 mode: coordinator
@@ -24,8 +24,8 @@ milestoneName: "Markdown Blog"
 lastStep: 2
 stepsCompleted: [1]
 sourceDocuments:
-  - "sdd/project-description.md"
-  - "sdd/roadmap.md"
+  - "sw/project-description.md"
+  - "sw/roadmap.md"
 currentSlice: "00-parse-frontmatter"
 nextSlice: "01-template-system"
 slices:
@@ -48,7 +48,7 @@ updatedAt: "ISO-8601 timestamp"
 
 ## Fields
 
-- `sddWorkflow`: must be `true` for the README to be treated as workflow state.
+- `swWorkflow`: must be `true` for the README to be treated as workflow state.
 - `workflowType`: must be `slice-driven-development`.
 - `status`: `in_progress`, `complete`, `paused`, `blocked`, or another explicit project status.
 - `mode`: last active mode, usually `coordinator` or `executor`.

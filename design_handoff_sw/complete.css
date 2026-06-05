@@ -1,0 +1,348 @@
+/* ─────────────────────────────────────────────────────────────
+   Slicewise — prepare slice (step 3) + complete (step 8)
+   Builds on empty-states.css + workflow.css + review.css.
+   ───────────────────────────────────────────────────────────── */
+
+/* ─── Readiness checklist ────────────────────────────────────── */
+.ready-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1px;
+  background: var(--border-faint);
+}
+.ready-cell {
+  background: var(--bg-pane);
+  padding: 11px 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+}
+.ready-mark {
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  margin-top: 1px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+}
+.ready-mark.done {
+  background: var(--success-bg);
+  color: var(--success);
+}
+.ready-mark.open {
+  background: var(--warning-bg);
+  color: var(--warning);
+}
+.ready-body {
+  min-width: 0;
+}
+.ready-name {
+  font-size: 12.5px;
+  font-weight: 500;
+}
+.ready-val {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  margin-top: 2px;
+  line-height: 1.45;
+}
+.ready-val.mono {
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+/* ─── Copyable executor prompt ───────────────────────────────── */
+.prompt-tools {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+}
+.prompt-copy {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: rgba(250, 250, 250, 0.7);
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  padding: 4px 9px;
+  border-radius: var(--r-md);
+  cursor: pointer;
+}
+.prompt-copy:hover {
+  background: rgba(255, 255, 255, 0.14);
+  color: var(--text-on-invert);
+}
+.prompt-body .lbl {
+  color: #8fb8ff;
+}
+.prompt-body .hd {
+  color: rgba(250, 250, 250, 0.45);
+}
+
+/* slice handoff split (G2) */
+.handoff-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.handoff-card {
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  background: var(--bg-pane);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.handoff-card .hc-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  background: var(--bg-subtle);
+}
+.handoff-card.primary {
+  background: var(--bg-invert);
+  border-color: var(--bg-invert);
+}
+.handoff-card.primary .hc-title {
+  color: var(--text-on-invert);
+}
+.handoff-card.primary .hc-desc {
+  color: rgba(250, 250, 250, 0.6);
+}
+.handoff-card.primary .hc-icon {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-on-invert);
+}
+.hc-title {
+  font-size: 13.5px;
+  font-weight: 500;
+}
+.hc-desc {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  flex: 1;
+}
+.hc-key {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--text-faint);
+}
+.handoff-card.primary .hc-key {
+  color: rgba(250, 250, 250, 0.55);
+}
+
+/* ─── Completion (step 8) ────────────────────────────────────── */
+.complete-hero {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px;
+  border-radius: var(--r-lg);
+  background: var(--bg-invert);
+  margin-bottom: 16px;
+}
+.complete-seal {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  flex-shrink: 0;
+  background: rgba(74, 222, 128, 0.15);
+  color: #4ade80;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+}
+.complete-htext {
+  flex: 1;
+  min-width: 0;
+}
+.complete-kick {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #4ade80;
+  margin-bottom: 4px;
+}
+.complete-title {
+  font-size: 21px;
+  font-weight: 500;
+  letter-spacing: -0.015em;
+  color: var(--text-on-invert);
+  line-height: 1.2;
+}
+.complete-sub {
+  font-size: 12.5px;
+  color: rgba(250, 250, 250, 0.6);
+  margin-top: 5px;
+}
+.complete-date {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: rgba(250, 250, 250, 0.5);
+  flex-shrink: 0;
+  text-align: right;
+}
+
+/* final summary prose */
+.summary-body {
+  padding: 14px 16px;
+  font-size: 13px;
+  line-height: 1.65;
+  color: var(--text);
+}
+.summary-body p {
+  margin-bottom: 10px;
+}
+.summary-body p:last-child {
+  margin-bottom: 0;
+}
+.summary-body code {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  background: var(--bg-subtle);
+  padding: 1px 5px;
+  border-radius: 3px;
+  border: 1px solid var(--border);
+}
+
+/* durable verification list */
+.verif-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 16px;
+  border-bottom: 1px solid var(--border-faint);
+}
+.verif-row:last-child {
+  border-bottom: none;
+}
+.verif-row .vk {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  background: var(--success-bg);
+  color: var(--success);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  flex-shrink: 0;
+}
+.verif-row .vcmd {
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  color: var(--text);
+}
+.verif-row .vdesc {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  margin-left: auto;
+}
+
+/* roadmap progress rail (H2) */
+.roadmap-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--border-faint);
+}
+.roadmap-row:last-child {
+  border-bottom: none;
+}
+.rm-node {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 10px;
+}
+.rm-node.done {
+  background: var(--success-bg);
+  color: var(--success);
+}
+.rm-node.current {
+  background: var(--bg-invert);
+  color: var(--text-on-invert);
+}
+.rm-node.next {
+  border: 1.5px dashed var(--border-strong);
+  color: var(--text-faint);
+}
+.rm-main {
+  flex: 1;
+  min-width: 0;
+}
+.rm-name {
+  font-size: 13px;
+  font-weight: 500;
+}
+.rm-name.muted {
+  color: var(--text-muted);
+  font-weight: 400;
+}
+.rm-sub {
+  font-size: 11.5px;
+  color: var(--text-muted);
+  margin-top: 2px;
+}
+.rm-tag {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 2px 8px;
+  border-radius: 7px;
+  flex-shrink: 0;
+}
+.rm-tag.done {
+  color: var(--success);
+  background: var(--success-bg);
+}
+.rm-tag.just {
+  color: #fff;
+  background: var(--success);
+}
+.rm-tag.next {
+  color: var(--text-muted);
+  background: var(--bg-sunken);
+}
+
+/* next-action footer */
+.next-strip {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: var(--bg-subtle);
+  border-top: 1px solid var(--border-faint);
+}
+.next-strip .ns-text {
+  font-size: 12.5px;
+  color: var(--text-muted);
+}
+.next-strip .ns-text b {
+  color: var(--text);
+  font-weight: 500;
+}
+.next-strip .spacer {
+  flex: 1;
+}

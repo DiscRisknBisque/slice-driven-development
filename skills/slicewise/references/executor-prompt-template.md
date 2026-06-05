@@ -6,10 +6,10 @@ Activate the slice-driven-development skill if available.
 Use Executor Mode.
 
 Read:
-- sdd/<milestone>/README.md
-- sdd/<milestone>/architecture.md
-- sdd/<milestone>/slices/<current-slice>.md
-- relevant decision records under sdd/<milestone>/decisions/
+- sw/<milestone>/README.md
+- sw/<milestone>/architecture.md
+- sw/<milestone>/slices/<current-slice>.md
+- relevant decision records under sw/<milestone>/decisions/
 
 Implement only this slice:
 <slice id/name>

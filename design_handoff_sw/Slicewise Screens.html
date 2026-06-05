@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Slicewise — Empty States</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="stylesheet" href="empty-states.css" />
+    <link rel="stylesheet" href="workflow.css" />
+    <link rel="stylesheet" href="review.css" />
+    <link rel="stylesheet" href="complete.css" />
+    <link rel="stylesheet" href="harness.css" />
+    <link rel="stylesheet" href="next.css" />
+    <style>
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+
+    <script
+      src="https://unpkg.com/react@18.3.1/umd/react.development.js"
+      integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js"
+      integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js"
+      integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y"
+      crossorigin="anonymous"
+    ></script>
+
+    <script type="text/babel" src="design-canvas.jsx"></script>
+    <script type="text/babel" src="sw-screens.jsx"></script>
+    <script type="text/babel" src="sw-workflow.jsx"></script>
+    <script type="text/babel" src="sw-review.jsx"></script>
+    <script type="text/babel" src="sw-prepare.jsx"></script>
+    <script type="text/babel" src="sw-executor.jsx"></script>
+    <script type="text/babel" src="sw-nextslice.jsx"></script>
+    <script type="text/babel">
+      const W = 1180,
+        H = 760;
+
+      function App() {
+        return (
+          <DesignCanvas>
+            <DCSection
+              id="no-projects"
+              title="No projects yet"
+              subtitle="First run — nothing open. Two ways to greet the user."
+            >
+              <DCArtboard
+                id="a1"
+                label="A1 · In-shell onboarding"
+                width={W}
+                height={H}
+              >
+                <NoProjectsCentered />
+              </DCArtboard>
+              <DCArtboard
+                id="a2"
+                label="A2 · Welcome (sidebar hidden)"
+                width={W}
+                height={H}
+              >
+                <NoProjectsWelcome />
+              </DCArtboard>
+            </DCSection>
+
+            <DCSection
+              id="missing-docs"
+              title="Project open · required docs missing"
+              subtitle="diorama is open but sw/project-description.md & sw/roadmap.md aren't set up."
+            >
+              <DCArtboard
+                id="b1"
+                label="B1 · Checklist (terse)"
+                width={W}
+                height={H}
+              >
+                <MissingDocsTerse />
+              </DCArtboard>
+              <DCArtboard
+                id="b2"
+                label="B2 · Guided + scaffold"
+                width={W}
+                height={H}
+              >
+                <MissingDocsGuided />
+              </DCArtboard>
+            </DCSection>
+
+            <DCSection
+              id="milestone-init"
+              title="Step 1 · Milestone init"
+              subtitle="Coordinator captured the goal + constraints and stopped at the init menu."
+            >
+              <DCArtboard
+                id="c1"
+                label="C1 · Capture sheet"
+                width={W}
+                height={H}
+              >
+                <MilestoneInitCapture />
+              </DCArtboard>
+              <DCArtboard
+                id="c2"
+                label="C2 · Coordinator handoff"
+                width={W}
+                height={H}
+              >
+                <MilestoneInitHandoff />
+              </DCArtboard>
+            </DCSection>
+
+            <DCSection
+              id="milestone-plan"
+              title="Step 2 · Milestone planning"
+              subtitle="Proposed vertical slices at the [A]mend / [D]ecision / [C]ontinue gate."
+            >
+              <DCArtboard
+                id="d1"
+                label="D1 · Slice stack (detail gradient)"
+                width={W}
+                height={H}
+              >
+                <MilestonePlanStack />
+              </DCArtboard>
+              <DCArtboard
+                id="d2"
+                label="D2 · Compact + side menu"
+                width={W}
+                height={H}
+              >
+                <MilestonePlanCompact />
+              </DCArtboard>
+            </DCSection>
+
+            <DCSection
+              id="prepare-slice"
+              title="Step 3 · Prepare slice"
+              subtitle="Slice 00 readiness gate — fields filled, last open question, [P]rompt / [E]xecutor handoff."
+            >
+              <DCArtboard
+                id="g1"
+                label="G1 · Readiness brief"
+                width={W}
+                height={H}
+              >
+                <PrepareSlice />
+              </DCArtboard>
+              <DCArtboard
+                id="g2"
+                label="G2 · Ready · Executor handoff"
+                width={W}
+                height={H}
+              >
+                <PrepareSliceReady />
+              </DCArtboard>
+            </DCSection>
+
+            <DCSection
+              id="executor-mode"
+              title="Step 4 · Executor Mode"
+              subtitle="The agent actively implementing slice 00 — raw coding-harness output, in-session and standalone."
+            >
+              <DCArtboard
+                id="i1"
+                label="I1 · In-session harness (working)"
+                width={W}
+                height={H}
+              >
+                <ExecutorInSession />
+              </DCArtboard>
+              <DCArtboard
+                id="i2"
+                label="I2 · Standalone agent · report emitted"
+                width={W}
+                height={H}
+              >
+                <ExecutorExternal />
+              </DCArtboard>
+            </DCSection>
+
+            <DCSection
+              id="process-report"
+              title="Step 5 · Process Executor report"
+              subtitle="Coordinator reads the structured report from slice 00 and reaches a verdict."
+            >
+              <DCArtboard
+                id="e1"
+                label="E1 · Report as received"
+                width={W}
+                height={H}
+              >
+                <ProcessReport />
+              </DCArtboard>
+              <DCArtboard id="e2" label="E2 · Triage view" width={W} height={H}>
+                <ProcessReportTriage />
+              </DCArtboard>
+            </DCSection>
+
+            <DCSection
+              id="next-slice"
+              title="Step 6 · Draft or promote next slice"
+              subtitle="Slice 00 accepted — Coordinator sharpens slice 01 and carries forward what implementation taught."
+            >
+              <DCArtboard
+                id="j1"
+                label="J1 · Promote slice 01 (sketched → detailed)"
+                width={W}
+                height={H}
+              >
+                <NextSlicePromote />
+              </DCArtboard>
+              <DCArtboard
+                id="j2"
+                label="J2 · Slice queue / pipeline"
+                width={W}
+                height={H}
+              >
+                <NextSliceQueue />
+              </DCArtboard>
+            </DCSection>
+
+            <DCSection
+              id="milestone-review"
+              title="Step 7 · Milestone review"
+              subtitle="All 4 slices accepted — compare against the goal and disposition provisional artifacts."
+            >
+              <DCArtboard
+                id="f1"
+                label="F1 · Goal vs delivered"
+                width={W}
+                height={H}
+              >
+                <MilestoneReview />
+              </DCArtboard>
+              <DCArtboard
+                id="f2"
+                label="F2 · Artifact disposition ledger"
+                width={W}
+                height={H}
+              >
+                <MilestoneReviewArtifacts />
+              </DCArtboard>
+            </DCSection>
+
+            <DCSection
+              id="milestone-complete"
+              title="Step 8 · Complete"
+              subtitle="Milestone 05 marked done — final summary, durable verification, resumable docs."
+            >
+              <DCArtboard
+                id="h1"
+                label="H1 · Completion summary"
+                width={W}
+                height={H}
+              >
+                <MilestoneComplete />
+              </DCArtboard>
+              <DCArtboard
+                id="h2"
+                label="H2 · Roadmap progress"
+                width={W}
+                height={H}
+              >
+                <MilestoneCompleteRoadmap />
+              </DCArtboard>
+            </DCSection>
+          </DesignCanvas>
+        );
+      }
+
+      ReactDOM.createRoot(document.getElementById("root")).render(<App />);
+    </script>
+  </body>
+</html>

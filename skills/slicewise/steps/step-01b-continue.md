@@ -2,7 +2,7 @@
 
 ## Purpose
 
-Resume an existing Slice-Driven Development workflow from milestone README frontmatter.
+Resume an existing Slicewise workflow from milestone README frontmatter.
 
 ## Mandatory Execution Rules
 
@@ -17,9 +17,9 @@ Resume an existing Slice-Driven Development workflow from milestone README front
 
 ## Context Boundaries
 
-Read only the detected SDD docs needed for continuation:
+Read only the detected Slicewise docs needed for continuation:
 
-- all `sdd/*/README.md` files with frontmatter
+- all `sw/*/README.md` files with frontmatter
 - selected milestone `README.md`
 - selected milestone `architecture.md`
 - selected milestone `slices/`
@@ -30,7 +30,7 @@ Do not inspect unrelated product files unless needed to explain an apparent inco
 
 ## Expected Inputs
 
-- Existing milestone README frontmatter with `sddWorkflow: true`.
+- Existing milestone README frontmatter with `swWorkflow: true`.
 - Optional user preference about which milestone to resume.
 - Optional new context or report to process.
 
@@ -88,7 +88,7 @@ Do not inspect unrelated product files unless needed to explain an apparent inco
 ## Menu
 
 ```text
-Welcome back. I found existing SDD workflow state.
+Welcome back. I found existing Slicewise workflow state.
 
 [R] Resume from recorded workflow state
 [P] Plan or revise milestone

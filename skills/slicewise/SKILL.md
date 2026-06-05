@@ -1,11 +1,11 @@
 ---
-name: slice-driven-development
+name: slicewise
 description: Use when planning, implementing, or steering work through small vertical slices with durable milestone, architecture, slice, and decision docs.
 ---
 
-# Slice-Driven Development
+# Slicewise
 
-Slice-Driven Development helps an agentic coding session move through small, reviewable vertical slices while preserving planning memory in durable project docs.
+Slicewise helps an agentic coding session move through small, reviewable vertical slices while preserving planning memory in durable project docs.
 
 ## Modes
 
@@ -16,8 +16,8 @@ Slice-Driven Development helps an agentic coding session move through small, rev
 ## Path Conventions
 
 - Bare paths in this skill resolve from the skill root.
-- SDD project docs live under `sdd/`.
-- Milestones live under `sdd/<NN>-<name>/`.
+- Slicewise project docs live under `sw/`.
+- Milestones live under `sw/<NN>-<name>/`.
 - The milestone README frontmatter is the workflow memory source of truth.
 
 ## Core Rules
@@ -30,7 +30,7 @@ Slice-Driven Development helps an agentic coding session move through small, rev
 - Do not build ahead.
 - Do not perform version-control operations.
 - Do not proceed through gated steps without explicit user approval.
-- Keep product architecture natural to the product; do not mirror SDD document names in code unless that is already the right design.
+- Keep product architecture natural to the product; do not mirror Slicewise document names in code unless that is already the right design.
 - Treat slice artifacts as provisional until Coordinator Mode promotes, condenses, archives, or carries them forward.
 
 ## Activation

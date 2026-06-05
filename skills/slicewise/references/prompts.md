@@ -6,15 +6,15 @@ These examples are copyable starting points for any agentic coding harness that 
 
 ```txt
 Activate the slice-driven-development skill.
-Use Slice-Driven Development in Coordinator Mode.
-Read the current SDD docs under sdd/ if they exist, initialize or resume workflow state, and stop at the required menu.
+Use Slicewise in Coordinator Mode.
+Read the current Slicewise docs under sw/ if they exist, initialize or resume workflow state, and stop at the required menu.
 ```
 
 ## Resume Existing Workflow
 
 ```txt
 Activate the slice-driven-development skill.
-Resume the existing Slice-Driven Development workflow.
+Resume the existing Slicewise workflow.
 Use milestone README frontmatter as workflow memory, summarize the current state, and show the continuation menu.
 ```
 
@@ -25,8 +25,8 @@ Activate the slice-driven-development skill.
 Use Coordinator Mode to plan this milestone:
 <milestone goal>
 
-Use project context from sdd/project-description.md and sdd/roadmap.md when available.
-Create or update milestone docs under sdd/<NN>-<name>/.
+Use project context from sw/project-description.md and sw/roadmap.md when available.
+Create or update milestone docs under sw/<NN>-<name>/.
 Make the current slice implementation-ready, the next slice moderately detailed, and future slices lightweight.
 Show the milestone planning menu and stop.
 ```

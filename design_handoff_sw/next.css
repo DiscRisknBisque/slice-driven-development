@@ -1,0 +1,292 @@
+/* ─────────────────────────────────────────────────────────────
+   Slicewise — Step 6 · Draft or promote the next slice
+   Builds on empty-states.css + workflow.css + review.css.
+   ───────────────────────────────────────────────────────────── */
+
+/* promote banner: slice 00 accepted → drafting next */
+.verdict.promote .verdict-icon {
+  background: var(--info-bg);
+  color: var(--info);
+}
+.verdict.promote .verdict-pill {
+  background: var(--info-bg);
+  color: var(--info);
+}
+
+/* sketched → detailed transition marker */
+.xform {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+}
+.xform .from {
+  color: var(--text-faint);
+  background: var(--bg-sunken);
+  padding: 2px 7px;
+  border-radius: 7px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.xform .to {
+  color: var(--success);
+  background: var(--success-bg);
+  padding: 2px 7px;
+  border-radius: 7px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.xform .ar {
+  color: var(--text-faint);
+}
+
+/* a "newly added by Coordinator" tag on freshly-drafted fields */
+.fresh-tag {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--info);
+  background: var(--info-bg);
+  padding: 1px 6px;
+  border-radius: 7px;
+  margin-left: 8px;
+}
+
+/* carried-forward deferred questions (from slice 00 → 01) */
+.carry-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-faint);
+}
+.carry-row:last-child {
+  border-bottom: none;
+}
+.carry-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 7px;
+  flex-shrink: 0;
+  margin-top: 1px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  background: var(--info-bg);
+  color: var(--info);
+}
+.carry-body {
+  flex: 1;
+  min-width: 0;
+}
+.carry-text {
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--text);
+}
+.carry-text code {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+.carry-from {
+  font-size: 11px;
+  color: var(--text-muted);
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.carry-from .src {
+  font-family: var(--font-mono);
+  color: var(--text-faint);
+}
+.carry-state {
+  flex-shrink: 0;
+  align-self: center;
+}
+
+/* "what implementation taught us" delta note */
+.delta {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 11px 14px;
+  margin: 0 14px 14px;
+  background: var(--info-bg);
+  border-radius: var(--r-md);
+  font-size: 12px;
+  color: #1e3a8a;
+  line-height: 1.55;
+}
+.delta .ico {
+  color: var(--info);
+  margin-top: 1px;
+  flex-shrink: 0;
+}
+.delta b {
+  font-weight: 600;
+}
+.delta code {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  background: rgba(255, 255, 255, 0.6);
+  padding: 1px 5px;
+  border-radius: 3px;
+}
+
+/* J2 — slice queue / pipeline rail */
+.queue-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--border-faint);
+}
+.queue-row:last-child {
+  border-bottom: none;
+}
+.queue-row.current {
+  background: var(--bg-subtle);
+}
+.q-node {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 10px;
+}
+.q-node.done {
+  background: var(--success-bg);
+  color: var(--success);
+}
+.q-node.current {
+  background: var(--bg-invert);
+  color: var(--text-on-invert);
+}
+.q-node.next {
+  border: 1.5px dashed var(--border-strong);
+  color: var(--text-faint);
+}
+.q-main {
+  flex: 1;
+  min-width: 0;
+}
+.q-top {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.q-num {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-faint);
+}
+.q-name {
+  font-size: 13.5px;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+.q-name.muted {
+  color: var(--text-muted);
+  font-weight: 400;
+}
+.q-tag {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 2px 8px;
+  border-radius: 7px;
+  flex-shrink: 0;
+}
+.q-tag.done {
+  color: var(--success);
+  background: var(--success-bg);
+}
+.q-tag.current {
+  color: var(--text-on-invert);
+  background: var(--bg-invert);
+}
+.q-tag.next {
+  color: var(--text-muted);
+  background: var(--bg-sunken);
+}
+.q-goal {
+  font-size: 12px;
+  color: var(--text-muted);
+  line-height: 1.5;
+  margin-top: 5px;
+  text-wrap: pretty;
+}
+.q-meta {
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  color: var(--text-faint);
+  margin-top: 6px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.q-meta .m {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.q-meta .m .d {
+  color: var(--text-muted);
+}
+
+/* milestone progress bar header */
+.ms-progress {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+}
+.ms-progress .mp-track {
+  flex: 1;
+  height: 7px;
+  border-radius: 4px;
+  background: var(--bg-sunken);
+  overflow: hidden;
+  display: flex;
+  gap: 2px;
+}
+.ms-progress .mp-seg {
+  height: 100%;
+  flex: 1;
+  border-radius: 2px;
+}
+.ms-progress .mp-seg.done {
+  background: var(--success);
+}
+.ms-progress .mp-seg.current {
+  background: var(--info);
+}
+.ms-progress .mp-seg.next {
+  background: var(--border-strong);
+  opacity: 0.5;
+}
+.ms-progress .mp-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+  white-space: nowrap;
+}
+.ms-progress .mp-label b {
+  color: var(--text);
+  font-weight: 500;
+}

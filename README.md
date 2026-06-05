@@ -16,21 +16,21 @@ It provides the following benefits:
 - **Preserved Decision Traces**: Decision documents are generated through the process, so nothing is lost during development.
 - **Reduced Risk**: Any slice or milestone that goes bad can easily be discarded and replanned without losing a large amount of progress.
 
-SDD works best when you keep the architectural decisions and review checkpoints, while the agent handles the repeatable mechanics. You steer the milestone, review each slice, and answer open questions. This isn't about composing the entire roadmap for your project, but about breaking down its implementation by milestones and slices. A milestone could be finishing the entire project in the case of a simple project or it could be akin to a feature in a larger project.
+Slicewise works best when you keep the architectural decisions and review checkpoints, while the agent handles the repeatable mechanics. You steer the milestone, review each slice, and answer open questions. This isn't about composing the entire roadmap for your project, but about breaking down its implementation by milestones and slices. A milestone could be finishing the entire project in the case of a simple project or it could be akin to a feature in a larger project.
 
 ## Coordinator Mode And Executor Mode
 
-SDD has two modes.
+Slicewise has two modes.
 
-**Coordinator Mode** owns planning, workflow state, questions, decisions, next-slice preparation, milestone review, and completion. It updates SDD docs and asks the user to make decisions at gates.
+**Coordinator Mode** owns planning, workflow state, questions, decisions, next-slice preparation, milestone review, and completion. It updates Slicewise docs and asks the user to make decisions at gates.
 
 **Executor Mode** implements exactly one current slice. It reads the milestone docs, relevant decisions, and current slice brief; changes only what that slice requires; verifies the result; and ends with a structured report for Coordinator Mode.
 
-The user remains the reviewer and decision-maker. SDD can recommend, challenge, and record, but it should not silently decide that a gated workflow step is complete.
+The user remains the reviewer and decision-maker. Slicewise can recommend, challenge, and record, but it should not silently decide that a gated workflow step is complete.
 
 ## Installation
 
-SDD is built on the open Agent Skills standard. Works with Claude Code, Cursor, Windsurf, Cline, GitHub Copilot, and any AI agent that supports the standard.
+Slicewise is built on the open Agent Skills standard. Works with Claude Code, Cursor, Windsurf, Cline, GitHub Copilot, and any AI agent that supports the standard.
 
 ```bash
 npx skills add discrisknbisque/slicewise
@@ -38,19 +38,19 @@ npx skills add discrisknbisque/slicewise
 
 ## Before You Start: Product Docs
 
-SDD is a development workflow, not a product strategy method. It helps turn an already-chosen direction into small, reviewable implementation slices.
+Slicewise is a development workflow, not a product strategy method. It helps turn an already-chosen direction into small, reviewable implementation slices.
 
 Before starting a milestone, a project should already have lightweight product context:
 
 ```txt
-sdd/
+sw/
   project-description.md
   roadmap.md
 ```
 
-`sdd/project-description.md` should explain what the project is, who it is for, the problem it solves, important constraints, and any non-goals that should shape development.
+`sw/project-description.md` should explain what the project is, who it is for, the problem it solves, important constraints, and any non-goals that should shape development.
 
-`sdd/roadmap.md` should explain the intended direction before SDD starts slicing the work. Keep it short enough to revise as you learn.
+`sw/roadmap.md` should explain the intended direction before Slicewise starts slicing the work. Keep it short enough to revise as you learn.
 
 Recommended roadmap format:
 
@@ -86,14 +86,14 @@ Recommended roadmap format:
 - Risks or open questions:
 ```
 
-If you do not have a roadmap yet, use a lightweight thinking pass before activating SDD. One good option is the [`mattnowdev/thinking-partner`](https://github.com/mattnowdev/thinking-partner) skill, which is designed for assumption-checking, mental models, and planning conversations.
+If you do not have a roadmap yet, use a lightweight thinking pass before activating Slicewise. One good option is the [`mattnowdev/thinking-partner`](https://github.com/mattnowdev/thinking-partner) skill, which is designed for assumption-checking, mental models, and planning conversations.
 
 Suggested prompt:
 
 ```txt
 Activate the thinking-partner skill.
 
-Help me create a lightweight product roadmap before I use Slice-Driven Development.
+Help me create a lightweight product roadmap before I use Slicewise.
 
 Project idea:
 <describe the project in plain language>
@@ -144,12 +144,12 @@ When we are ready to write the roadmap, format it exactly like this:
 - Success signals:
 - Risks or open questions:
 
-Keep the roadmap lightweight. Do not create slice plans, implementation tasks, or architecture decisions yet. SDD will handle those later.
+Keep the roadmap lightweight. Do not create slice plans, implementation tasks, or architecture decisions yet. Slicewise will handle those later.
 ```
 
 ## First Milestone Walkthrough
 
-You do not need to understand the whole workflow before using SDD. Treat it like a guided checklist for turning a loose idea into one reviewable piece of working software at a time.
+You do not need to understand the whole workflow before using Slicewise. Treat it like a guided checklist for turning a loose idea into one reviewable piece of working software at a time.
 
 ### 1. Start With The Thing You Want
 
@@ -157,13 +157,13 @@ Give the agent the feature, fix, or exploration in normal language. It is fine i
 
 ```txt
 Activate the slicewise skill.
-Use Slice-Driven Development in Coordinator Mode.
+Use Slicewise in Coordinator Mode.
 
 I want users to be able to save profile settings. Keep it lightweight.
 Do not redesign the whole account area yet.
 ```
 
-Coordinator Mode initializes a milestone under `sdd/`, captures the goal and constraints, and stops at the initialization menu.
+Coordinator Mode initializes a milestone under `sw/`, captures the goal and constraints, and stops at the initialization menu.
 
 Useful choice:
 
@@ -292,7 +292,7 @@ For each slice, the rhythm is:
 Plan or promote slice -> prepare current slice -> implement -> process report
 ```
 
-This loop is the heart of SDD. It keeps work small enough to understand, while still preserving the reasons behind important choices.
+This loop is the heart of Slicewise. It keeps work small enough to understand, while still preserving the reasons behind important choices.
 
 ### 7. Review And Complete The Milestone
 
@@ -359,12 +359,12 @@ Every menu is a transaction boundary. The agent should stop after showing the me
 The milestone README frontmatter is the durable workflow source of truth:
 
 ```txt
-sdd/<NN>-<milestone-name>/README.md
+sw/<NN>-<milestone-name>/README.md
 ```
 
 Example fields include:
 
-- `sddWorkflow`
+- `swWorkflow`
 - `status`
 - `mode`
 - `lastStep`
@@ -378,12 +378,12 @@ Example fields include:
 
 The full schema lives in `skills/slicewise/references/state-schema.md`.
 
-## SDD Docs Layout
+## Slicewise Docs Layout
 
-Projects using SDD usually keep:
+Projects using Slicewise usually keep:
 
 ```txt
-sdd/
+sw/
   project-description.md
   roadmap.md
   <NN>-<milestone-name>/

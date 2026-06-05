@@ -19,8 +19,8 @@ Use Coordinator Mode to plan or revise a milestone around reviewable vertical sl
 
 Read:
 
-- `sdd/project-description.md`, if present
-- `sdd/roadmap.md`, if present
+- `sw/project-description.md`, if present
+- `sw/roadmap.md`, if present
 - current milestone README
 - current milestone `architecture.md`, if present
 - existing slice files, if present
@@ -49,10 +49,10 @@ Do not edit product implementation files in this step.
 
 ## Document Changes It May Make
 
-- Create or update `sdd/<milestone>/README.md`.
-- Create or update `sdd/<milestone>/architecture.md`.
-- Create or update files under `sdd/<milestone>/slices/`.
-- Create or update files under `sdd/<milestone>/decisions/`.
+- Create or update `sw/<milestone>/README.md`.
+- Create or update `sw/<milestone>/architecture.md`.
+- Create or update files under `sw/<milestone>/slices/`.
+- Create or update files under `sw/<milestone>/decisions/`.
 
 ## Frontmatter Fields It Updates
 

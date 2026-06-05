@@ -1,0 +1,532 @@
+/* ─────────────────────────────────────────────────────────────
+   Slicewise — Step 4 · Executor Mode (raw coding-agent harness)
+   A terminal/TUI transcript of an agent implementing one slice.
+   Builds on empty-states.css (shared tokens).
+   ───────────────────────────────────────────────────────────── */
+
+.harness {
+  --h-bg: #131313;
+  --h-bg-bar: #1a1a1a;
+  --h-line: rgba(255, 255, 255, 0.07);
+  --h-text: rgba(245, 245, 245, 0.92);
+  --h-dim: rgba(245, 245, 245, 0.42);
+  --h-faint: rgba(245, 245, 245, 0.26);
+  --h-blue: #8fb8ff;
+  --h-amber: #fbbf77;
+  --h-green: #5fd08a;
+  --h-red: #f2867c;
+  --h-violet: #c7a9f2;
+
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  background: var(--h-bg);
+  border-radius: var(--r-md);
+  overflow: hidden;
+  font-family: var(--font-mono);
+  border: 1px solid var(--h-line);
+}
+.harness.bare {
+  border-radius: 0;
+  border: none;
+  height: 100%;
+}
+
+/* ─── Harness top bar ──────────────────────────────────────── */
+.h-bar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 14px;
+  background: var(--h-bg-bar);
+  border-bottom: 1px solid var(--h-line);
+  flex-shrink: 0;
+}
+.h-bar .h-name {
+  color: var(--h-text);
+  font-size: 12px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+.h-bar .h-glyph {
+  color: var(--h-amber);
+}
+.h-bar .h-chip {
+  font-size: 10.5px;
+  color: var(--h-dim);
+  border: 1px solid var(--h-line);
+  border-radius: 5px;
+  padding: 2px 7px;
+}
+.h-bar .h-sep {
+  color: var(--h-faint);
+}
+.h-bar .h-spacer {
+  flex: 1;
+}
+.h-bar .h-state {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 10.5px;
+  padding: 3px 9px;
+  border-radius: 20px;
+}
+.h-bar .h-state.working {
+  color: var(--h-amber);
+  background: rgba(251, 191, 119, 0.12);
+}
+.h-bar .h-state.done {
+  color: var(--h-green);
+  background: rgba(95, 208, 138, 0.13);
+}
+.h-bar .h-state .pulse {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  animation: hpulse 1.1s ease-in-out infinite;
+}
+@keyframes hpulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.25;
+  }
+}
+
+/* ─── Transcript body ──────────────────────────────────────── */
+.h-body {
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+  padding: 14px 16px 8px;
+  font-size: 12px;
+  line-height: 1.62;
+  color: var(--h-text);
+  position: relative;
+}
+/* faint fade at top — implies scrolled history above */
+.h-body::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 22px;
+  background: linear-gradient(var(--h-bg), rgba(19, 19, 19, 0));
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* assistant prose line */
+.h-msg {
+  display: flex;
+  gap: 9px;
+  margin: 9px 0 4px;
+}
+.h-msg .bullet {
+  color: var(--h-green);
+  flex-shrink: 0;
+}
+.h-msg .bullet.violet {
+  color: var(--h-violet);
+}
+.h-msg .txt {
+  color: var(--h-text);
+}
+.h-msg .txt .accent {
+  color: var(--h-blue);
+}
+.h-msg .txt .code {
+  color: var(--h-amber);
+}
+
+/* a thinking / reasoning line */
+.h-think {
+  color: var(--h-dim);
+  font-style: italic;
+  margin: 6px 0 2px 19px;
+  font-size: 11.5px;
+}
+
+/* tool call line + indented result */
+.h-tool {
+  display: flex;
+  gap: 9px;
+  margin-top: 8px;
+  align-items: baseline;
+}
+.h-tool .tk {
+  color: var(--h-blue);
+  flex-shrink: 0;
+}
+.h-tool .call {
+  color: var(--h-text);
+}
+.h-tool .call .fn {
+  color: var(--h-violet);
+}
+.h-tool .call .arg {
+  color: var(--h-dim);
+}
+.h-tool .tag {
+  margin-left: auto;
+  color: var(--h-faint);
+  font-size: 10.5px;
+}
+
+.h-res {
+  margin: 2px 0 2px 19px;
+  padding-left: 12px;
+  border-left: 1px solid var(--h-line);
+  color: var(--h-dim);
+  font-size: 11.5px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+}
+.h-res .ok {
+  color: var(--h-green);
+}
+.h-res .num {
+  color: var(--h-blue);
+}
+.h-res .mut {
+  color: var(--h-faint);
+}
+
+/* diff block */
+.h-diff {
+  margin: 4px 0 2px 19px;
+  border: 1px solid var(--h-line);
+  border-radius: 5px;
+  overflow: hidden;
+}
+.h-diff .dh {
+  padding: 5px 11px;
+  background: rgba(255, 255, 255, 0.025);
+  color: var(--h-dim);
+  font-size: 11px;
+  border-bottom: 1px solid var(--h-line);
+  display: flex;
+  gap: 8px;
+}
+.h-diff .dh .fp {
+  color: var(--h-text);
+}
+.h-diff pre {
+  margin: 0;
+  padding: 7px 0;
+  font-family: var(--font-mono);
+  font-size: 11.5px;
+  line-height: 1.55;
+  white-space: pre;
+  overflow: hidden;
+}
+.h-diff .dl {
+  display: block;
+  padding: 0 11px;
+}
+.h-diff .dl.add {
+  background: rgba(95, 208, 138, 0.1);
+  color: var(--h-green);
+}
+.h-diff .dl.del {
+  background: rgba(242, 134, 124, 0.1);
+  color: var(--h-red);
+}
+.h-diff .dl.ctx {
+  color: var(--h-dim);
+}
+.h-diff .dl .ln {
+  display: inline-block;
+  width: 30px;
+  color: var(--h-faint);
+  user-select: none;
+}
+
+/* todo / plan checklist */
+.h-todo {
+  margin: 6px 0 2px 19px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.h-todo .ti {
+  display: flex;
+  gap: 9px;
+  font-size: 11.5px;
+  align-items: baseline;
+}
+.h-todo .box {
+  flex-shrink: 0;
+  width: 14px;
+}
+.h-todo .ti.done .box {
+  color: var(--h-green);
+}
+.h-todo .ti.done .lbl {
+  color: var(--h-dim);
+  text-decoration: line-through;
+  text-decoration-color: var(--h-faint);
+}
+.h-todo .ti.now .box {
+  color: var(--h-amber);
+}
+.h-todo .ti.now .lbl {
+  color: var(--h-text);
+}
+.h-todo .ti.todo .box {
+  color: var(--h-faint);
+}
+.h-todo .ti.todo .lbl {
+  color: var(--h-dim);
+}
+
+/* run command + output */
+.h-run {
+  margin: 6px 0 2px 19px;
+}
+.h-run .cmd {
+  color: var(--h-text);
+}
+.h-run .cmd .dollar {
+  color: var(--h-green);
+  margin-right: 7px;
+}
+
+/* working / streaming cursor line */
+.h-working {
+  display: flex;
+  gap: 9px;
+  margin-top: 10px;
+  align-items: center;
+  color: var(--h-amber);
+  font-size: 11.5px;
+}
+.h-working .spin {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  border: 1.5px solid rgba(251, 191, 119, 0.3);
+  border-top-color: var(--h-amber);
+  animation: hspin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+@keyframes hspin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+.h-working .cursor {
+  display: inline-block;
+  width: 7px;
+  height: 14px;
+  background: var(--h-amber);
+  margin-left: 2px;
+  animation: hblink 1s step-end infinite;
+  vertical-align: text-bottom;
+}
+@keyframes hblink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* the standardized Executor report rendered into the terminal */
+.h-report {
+  margin: 10px 0 2px;
+  border: 1px solid var(--h-line);
+  border-radius: 6px;
+  overflow: hidden;
+}
+.h-report .rep-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 12px;
+  background: rgba(95, 208, 138, 0.08);
+  border-bottom: 1px solid var(--h-line);
+  color: var(--h-green);
+  font-size: 11px;
+}
+.h-report .rep-head .seal {
+  color: var(--h-green);
+}
+.h-report .rep-body {
+  padding: 9px 12px;
+}
+.h-report .rf {
+  display: grid;
+  grid-template-columns: 116px 1fr;
+  gap: 12px;
+  padding: 3px 0;
+  font-size: 11.5px;
+  line-height: 1.55;
+}
+.h-report .rf .k {
+  color: var(--h-faint);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  font-size: 10px;
+  padding-top: 1px;
+}
+.h-report .rf .v {
+  color: var(--h-text);
+}
+.h-report .rf .v .ok {
+  color: var(--h-green);
+}
+.h-report .rf .v .blue {
+  color: var(--h-blue);
+}
+.h-report .rf .v .amber {
+  color: var(--h-amber);
+}
+
+/* ─── Harness footer (TUI status line) ─────────────────────── */
+.h-foot {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 7px 14px;
+  background: var(--h-bg-bar);
+  border-top: 1px solid var(--h-line);
+  font-size: 10.5px;
+  color: var(--h-dim);
+  flex-shrink: 0;
+}
+.h-foot .hint {
+  color: var(--h-faint);
+}
+.h-foot .hint b {
+  color: var(--h-dim);
+  font-weight: 500;
+}
+.h-foot .grow {
+  flex: 1;
+}
+.h-foot .stat {
+  color: var(--h-dim);
+}
+.h-foot .stat b {
+  color: var(--h-text);
+  font-weight: 500;
+}
+
+/* In-session (I1): a thin label strip above the embedded harness */
+.exec-strip {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 12px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.exec-strip .ex-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 9px;
+  border-radius: 20px;
+  background: var(--bg-invert);
+  color: var(--text-on-invert);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+}
+.exec-strip .ex-badge .pulse {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--h-amber);
+  animation: hpulse 1.1s ease-in-out infinite;
+}
+.exec-strip .ex-note {
+  color: var(--text-muted);
+}
+.exec-strip .ex-note b {
+  color: var(--text);
+  font-weight: 500;
+}
+.exec-strip .ex-stop {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-faint);
+  border: 1px solid var(--border-strong);
+  padding: 4px 10px;
+  border-radius: var(--r-md);
+  background: var(--bg-pane);
+}
+
+/* standalone terminal window shell (I2 — external harness) */
+.term-shell {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  background: #0c0c0c;
+  border-radius: 8px;
+  overflow: hidden;
+  font-family: var(--font-mono);
+}
+.term-titlebar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 12px;
+  height: 34px;
+  background: #1a1a1a;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+  flex-shrink: 0;
+}
+.term-titlebar .tl {
+  display: flex;
+  gap: 7px;
+  align-items: center;
+  width: 56px;
+}
+.term-titlebar .tl span {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+}
+.term-titlebar .tl .r {
+  background: #ff5f57;
+}
+.term-titlebar .tl .y {
+  background: #febc2e;
+}
+.term-titlebar .tl .g {
+  background: #28c840;
+}
+.term-titlebar .tt {
+  flex: 1;
+  text-align: center;
+  font-size: 11px;
+  color: rgba(245, 245, 245, 0.4);
+}
+.term-titlebar .tr {
+  width: 56px;
+}
+
+/* a pasted-prompt line at the top of the external harness */
+.h-prompt {
+  display: flex;
+  gap: 9px;
+  margin: 4px 0 2px;
+}
+.h-prompt .pf {
+  color: var(--h-green);
+  flex-shrink: 0;
+}
+.h-prompt .ptxt {
+  color: var(--h-text);
+}
+.h-prompt .ptxt .em {
+  color: var(--h-dim);
+}
