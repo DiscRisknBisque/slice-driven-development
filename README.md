@@ -465,6 +465,35 @@ Useful human/GUI checkpoints are:
 
 No repository transition is required by the skill itself.
 
+## Why Use This?
+
+Slicewise improves the model's adherence to a vertical-slice-driven workflow and is especially helping in preventing the typical drift toward horizontal slices. Encouraging early results from a small test suite, n=3. 100% means the skill _reliably passes these 6 behavioral checks_, not that it's flawless.
+
+- Menus / checkpoints: baseline produced a structured menu in 0 of 18 runs; with-skill in 18 of 18.
+- Challenging risky input (eval 3): with-skill flagged the brittle "crash loudly" choice and the TOML scope-creep in 3/3 runs; baseline in 0/3 — it just complied.
+- Standard executor report (eval 4): with-skill 3/3; baseline gave loose summaries 0/3.
+- Where baseline already does fine: summarizing existing state, implementing a well-specified slice, updating docs.
+
+Uplifts where you would expect for workflow adherence. Surprising results in slice readiness. Not shocked the base model (Opus 4.8 with Claude Code) executes well; it is a coding harness after all.
+
+| Eval                      | With Slicewise | Baseline (no skill) |
+| ------------------------- | :------------: | :-----------------: |
+| 1 · new-milestone init    |      100%      |         0%          |
+| 2 · resume workflow       |      100%      |         75%         |
+| 3 · slice readiness       |      100%      |         20%         |
+| 4 · executor mode         |      100%      |         73%         |
+| 5 · report processing     |      100%      |         80%         |
+| 6 · interruption handling |      100%      |         67%         |
+| **Overall**               |    **100%**    |      **52.5%**      |
+
+### Caveats and Further Testing
+
+1. Assertions were co-developed with the skill. The baseline (identical checks, ~52%) is the control that makes the gap meaningful — but this is not an independent third-party
+   benchmark, and you should say so.
+2. The skill is heavier — ~115s / ~21.8k tokens per run vs ~87s / ~16.2k for baseline.
+
+Overall these are encouraging early results. I'm going to proceed to testing with user's real-world work to get a better sense of the workflow.
+
 ## Special Thanks
 
 - Thank you to [Matt Now (@mattnowdev)](https://github.com/mattnowdev) for creating the [thinking-partner](https://github.com/mattnowdev/thinking-partner/tree/main?tab=readme-ov-file) skill, which I've found extremely helpful here and elsewhere.

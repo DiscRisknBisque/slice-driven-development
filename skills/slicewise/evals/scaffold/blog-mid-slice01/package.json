@@ -1,0 +1,11 @@
+{
+  "name": "markdown-blog",
+  "version": "0.1.0",
+  "description": "A small static blog generator that renders Markdown posts with frontmatter into HTML pages and a feed.",
+  "type": "module",
+  "main": "src/index.js",
+  "scripts": {
+    "demo": "node scripts/demo.js"
+  },
+  "license": "MIT"
+}

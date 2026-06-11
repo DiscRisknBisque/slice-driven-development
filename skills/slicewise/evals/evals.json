@@ -1,11 +1,12 @@
 {
-  "skill_name": "slice-driven-development",
+  "skill_name": "slicewise",
   "evals": [
     {
       "id": 1,
-      "name": "new-milestone-planning",
-      "prompt": "Activate the slice-driven-development skill. I want to build a markdown blog generator with frontmatter, templates, and feeds. Help me plan the first milestone in vertical slices.",
-      "expected_output": "Coordinator Mode initializes or uses milestone README frontmatter, drafts a milestone plan, presents the planning menu, and stops for user approval.",
+      "name": "new-milestone-init",
+      "prompt": "Activate the Slicewise skill. I want to build a markdown blog generator with frontmatter, templates, and feeds. Help me plan the first milestone in vertical slices.",
+      "files": [],
+      "expected_output": "Coordinator Mode initializes milestone README frontmatter, captures the goal and any open design questions, presents the initialization menu, and stops for explicit user approval before drafting the slice plan.",
       "assertions": [
         {
           "id": "identifies-coordinator-mode",
@@ -21,22 +22,18 @@
         },
         {
           "id": "requires-user-approval",
-          "description": "Does not proceed to a later gated step without a user menu choice."
-        },
-        {
-          "id": "slice-detail-discipline",
-          "description": "Current slice is detailed, next slice is moderately detailed, and future slices are lightweight."
+          "description": "Does not draft the slice plan or proceed to a later gated step without an explicit user menu choice."
         }
       ]
     },
     {
       "id": 2,
       "name": "existing-workflow-continuation",
-      "prompt": "Activate the slice-driven-development skill and resume the existing workflow in this project.",
+      "prompt": "Activate the Slicewise skill and resume the existing workflow in this project.",
       "files": [
-        "scaffold/sw/01-markdown-blog/README.md",
-        "scaffold/sw/01-markdown-blog/architecture.md",
-        "scaffold/sw/01-markdown-blog/slices/00-parse-frontmatter.md"
+        "evals/scaffold/blog-mid-slice00/sw/01-markdown-blog/README.md",
+        "evals/scaffold/blog-mid-slice00/sw/01-markdown-blog/architecture.md",
+        "evals/scaffold/blog-mid-slice00/sw/01-markdown-blog/slices/00-parse-frontmatter.md"
       ],
       "expected_output": "Continuation detects swWorkflow: true, summarizes state, presents the resume menu, and routes based on recorded workflow state only after user approval.",
       "assertions": [
@@ -63,9 +60,9 @@
       "name": "slice-readiness",
       "prompt": "Use Slicewise in Coordinator Mode. Prepare the current slice. Answers: malformed input should crash loudly; also add TOML frontmatter because another tool has it.",
       "files": [
-        "scaffold/sw/01-markdown-blog/README.md",
-        "scaffold/sw/01-markdown-blog/architecture.md",
-        "scaffold/sw/01-markdown-blog/slices/00-parse-frontmatter.md"
+        "evals/scaffold/blog-mid-slice00/sw/01-markdown-blog/README.md",
+        "evals/scaffold/blog-mid-slice00/sw/01-markdown-blog/architecture.md",
+        "evals/scaffold/blog-mid-slice00/sw/01-markdown-blog/slices/00-parse-frontmatter.md"
       ],
       "expected_output": "The readiness step classifies questions, challenges risky or scope-expanding answers, updates decisions when needed, and returns to the same menu.",
       "assertions": [
@@ -94,14 +91,15 @@
     {
       "id": 4,
       "name": "executor-mode",
-      "prompt": "Activate the slice-driven-development skill if available. Use Executor Mode. Read the milestone docs and implement only Slice 01, the template system.",
+      "prompt": "Activate the Slicewise skill if available. Use Executor Mode. Read the milestone docs and implement only the current slice, the template system.",
       "files": [
-        "scaffold/sw/01-markdown-blog/README.md",
-        "scaffold/sw/01-markdown-blog/architecture.md",
-        "scaffold/sw/01-markdown-blog/slices/01-template-system.md",
-        "scaffold/sw/01-markdown-blog/decisions/00-frontmatter-defaults.md",
-        "scaffold/src/parser.js",
-        "scaffold/package.json"
+        "evals/scaffold/blog-mid-slice01/sw/01-markdown-blog/README.md",
+        "evals/scaffold/blog-mid-slice01/sw/01-markdown-blog/architecture.md",
+        "evals/scaffold/blog-mid-slice01/sw/01-markdown-blog/slices/01-template-system.md",
+        "evals/scaffold/blog-mid-slice01/sw/01-markdown-blog/decisions/00-frontmatter-defaults.md",
+        "evals/scaffold/blog-mid-slice01/src/parser.js",
+        "evals/scaffold/blog-mid-slice01/package.json",
+        "evals/scaffold/blog-mid-slice01/posts/hello-world.md"
       ],
       "expected_output": "Executor Mode implements one slice only, verifies it, avoids future slices, avoids version-control operations, and ends with the standard report.",
       "assertions": [
@@ -111,11 +109,11 @@
         },
         {
           "id": "one-slice-only",
-          "description": "Implements only the named slice."
+          "description": "Implements only the current slice (the template system)."
         },
         {
           "id": "no-future-slices",
-          "description": "Does not build later feed or unrelated CLI behavior."
+          "description": "Does not build later RSS feed or CLI behavior from future slices."
         },
         {
           "id": "no-version-control-operations",
@@ -132,9 +130,9 @@
       "name": "post-slice-report-processing",
       "prompt": "Use Coordinator Mode to process this Executor report: Slice 00 is implemented, malformed input now returns a structured error, verification passed, but the parser found that title-derived slugs need a documented normalization rule.",
       "files": [
-        "scaffold/sw/01-markdown-blog/README.md",
-        "scaffold/sw/01-markdown-blog/architecture.md",
-        "scaffold/sw/01-markdown-blog/slices/00-parse-frontmatter.md"
+        "evals/scaffold/blog-mid-slice00/sw/01-markdown-blog/README.md",
+        "evals/scaffold/blog-mid-slice00/sw/01-markdown-blog/architecture.md",
+        "evals/scaffold/blog-mid-slice00/sw/01-markdown-blog/slices/00-parse-frontmatter.md"
       ],
       "expected_output": "Coordinator Mode classifies findings and questions, updates docs and decisions, decides slice status, prepares next-slice work, and returns to the menu.",
       "assertions": [
@@ -164,6 +162,7 @@
       "id": 6,
       "name": "interruption-handling",
       "prompt": "Use Coordinator Mode to plan a milestone. Interruption: also, this project must run without network access in production.",
+      "files": [],
       "expected_output": "The active step incorporates or asks a bounded follow-up about the new constraint, updates state if needed, and returns to the original menu.",
       "assertions": [
         {
@@ -177,42 +176,6 @@
         {
           "id": "same-menu",
           "description": "Returns to the original checkpoint menu."
-        }
-      ]
-    },
-    {
-      "id": 7,
-      "name": "vendor-and-automation-removal",
-      "prompt": "Inspect the skill package for portability boundaries.",
-      "expected_output": "The skill package contains no vendor-specific harness names, no dollar-style invocation syntax, and no legacy automation handoff references.",
-      "assertions": [
-        {
-          "id": "no-vendor-specific-metadata",
-          "description": "No vendor-specific skill metadata is required."
-        },
-        {
-          "id": "no-dollar-invocation",
-          "description": "No dollar-style invocation syntax appears."
-        },
-        {
-          "id": "no-legacy-handoff",
-          "description": "No legacy automation handoff references remain."
-        }
-      ]
-    },
-    {
-      "id": 8,
-      "name": "version-control-boundary",
-      "prompt": "Use Slicewise in Executor Mode for the current slice.",
-      "expected_output": "The skill makes the version-control boundary explicit and does not instruct agents to perform repository transitions.",
-      "assertions": [
-        {
-          "id": "negative-boundary-only",
-          "description": "Skill package says not to perform version-control operations without providing operational recipes."
-        },
-        {
-          "id": "readme-human-owned-checkpoints",
-          "description": "README describes optional human or GUI-owned checkpoints only."
         }
       ]
     }

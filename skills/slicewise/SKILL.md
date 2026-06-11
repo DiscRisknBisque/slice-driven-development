@@ -18,6 +18,7 @@ Slicewise helps an agentic coding session move through small, reviewable vertica
 - Bare paths in this skill resolve from the skill root.
 - Slicewise project docs live under `sw/`.
 - Milestones live under `sw/<NN>-<name>/`.
+- Slices and decision records use a sequential two-digit prefix and a short kebab-case title, numbered per milestone, e.g. `slices/00-parse-frontmatter.md`, `decisions/00-frontmatter-defaults.md`.
 - The milestone README frontmatter is the workflow memory source of truth.
 
 ## Core Rules
@@ -26,6 +27,7 @@ Slicewise helps an agentic coding session move through small, reviewable vertica
 - Only the current slice and next slice may be detailed; future slices stay lightweight.
 - Preserve accepted decisions in decision docs.
 - Treat open questions as gates until answered, explicitly deferred, or marked non-blocking.
+- When a developer's answer looks brittle, premature, or expands the current slice, surface the tradeoff once and offer an alternative — then respect their call. The developer is the guide; a decision they make stands.
 - Treat implementation findings as design data.
 - Do not build ahead.
 - Do not perform version-control operations.

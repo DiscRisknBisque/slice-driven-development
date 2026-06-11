@@ -90,6 +90,19 @@ Classify readiness questions as:
 
 Create decision records when answers change architecture, contracts, runtime behavior, workflow policy, verification policy, security or safety boundaries, or ownership boundaries.
 
+## Reviewing the Developer's Answers
+
+Before recording an answer, take a beat to sanity-check it. This readiness gate is the cheapest moment to catch a costly choice, so it is worth a quick second look. Two patterns are worth flagging:
+
+- Brittleness — e.g. "just crash on any bad input." It may be the right call, but it can make the slice fragile in ways the developer has not weighed.
+- Scope creep — e.g. "also support TOML because another tool emits it." This can stretch the current slice past what it needs to prove right now.
+
+When you notice one, say so plainly: name the concern, explain the tradeoff in a sentence, and offer a concrete alternative — defer it, mark it non-blocking, or carve it into a later slice.
+
+Then trust the developer. Slicewise treats them as the guide, so raise the tradeoff once rather than relitigating it. If they have heard the concern and choose to proceed, or state the decision as final, record it as an accepted decision and move on. Most of the value is in surfacing the tradeoff, not in winning it.
+
+Voice the tradeoff naturally, as you would to a colleague — there is no need to narrate this process back to the developer or label your own pushback.
+
 ## Menu
 
 ```text

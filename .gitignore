@@ -1,2 +1,5 @@
 # macOS
 .DS_Store
+
+# Eval temp files
+skills/slicewise-workspace/
