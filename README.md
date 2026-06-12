@@ -83,7 +83,7 @@ If you do not have a roadmap yet, use a lightweight thinking pass before activat
 
 Suggested prompt:
 
-```txt
+```md
 Using the thinking-partner skill, help me create a lightweight product description and roadmap before I use Slicewise.
 
 <project-description-template filepath="sw/project-description.md">
