@@ -50,33 +50,26 @@ sw/
 
 `sw/project-description.md` should explain what the project is, who it is for, the problem it solves, important constraints, and any non-goals that should shape development.
 
-`sw/roadmap.md` should explain the intended direction before Slicewise starts slicing the work. Keep it short enough to revise as you learn.
-
-Recommended roadmap format:
+Starter template:
 
 ```md
-# Roadmap
-
-## Product Direction
+# Product Description
 
 - Audience:
 - Problem:
 - Desired outcome:
 - Constraints:
 - Non-goals:
+```
 
-## Milestones
+`sw/roadmap.md` should explain the intended direction before Slicewise starts slicing the work. Keep it short enough to revise as you learn.
 
-### Milestone 01: Name
+Starter template:
 
-- Outcome:
-- Why now:
-- Scope:
-- Non-goals:
-- Success signals:
-- Risks or open questions:
+```md
+# Milestones
 
-### Milestone 02: Name
+## Milestone 01: Name
 
 - Outcome:
 - Why now:
@@ -91,51 +84,22 @@ If you do not have a roadmap yet, use a lightweight thinking pass before activat
 Suggested prompt:
 
 ```txt
-Activate the thinking-partner skill.
+Using the thinking-partner skill, help me create a lightweight product description and roadmap before I use Slicewise.
 
-Help me create a lightweight product roadmap before I use Slicewise.
-
-Project idea:
-<describe the project in plain language>
-
-Audience:
-<who this is for>
-
-Current state:
-<what exists today, if anything>
-
-Constraints:
-<time, technical, budget, platform, policy, or skill constraints>
-
-Non-goals:
-<what we should not solve yet>
-
-Please challenge my assumptions, identify missing context, and help me choose a practical first development direction.
-
-When we are ready to write the roadmap, format it exactly like this:
-
-# Roadmap
-
-## Product Direction
+<project-description-template filepath="sw/project-description.md">
+# Product Description
 
 - Audience:
 - Problem:
 - Desired outcome:
 - Constraints:
 - Non-goals:
+</project-description-template>
 
-## Milestones
+<roadmap-template filepath="sw/roadmap.md">
+# Milestones
 
-### Milestone 01: Name
-
-- Outcome:
-- Why now:
-- Scope:
-- Non-goals:
-- Success signals:
-- Risks or open questions:
-
-### Milestone 02: Name
+## Milestone 01: Name
 
 - Outcome:
 - Why now:
@@ -143,8 +107,9 @@ When we are ready to write the roadmap, format it exactly like this:
 - Non-goals:
 - Success signals:
 - Risks or open questions:
+</roadmap-template>
 
-Keep the roadmap lightweight. Do not create slice plans, implementation tasks, or architecture decisions yet. Slicewise will handle those later.
+Keep them lightweight. Do not create slice plans, implementation tasks, or architecture decisions yet. Slicewise will handle those later.
 ```
 
 ## First Milestone Walkthrough
